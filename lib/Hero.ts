@@ -1,33 +1,26 @@
 import { AbilityType, Alignment } from "./Enums";
-import Ability from "./Ability";
+import AbilityEntity from "./AbilityEntity";
 
-export default class Hero {
+export default class Hero extends AbilityEntity {
     private _alignment: Alignment;
     private _baseDamage: number;
     private _baseHitPoints: number;
-    private _abilities: Map<AbilityType, Ability>;
     private _baseArmorClass: number;
     private _baseAttackDamage: number;
-    
+    private _xp: number;
+
     name: string;
-    
+
     constructor() {
+        super();
         this._alignment = Alignment.Neutral;
-        this._baseHitPoints = 5
+        this._baseHitPoints = 5;
         this._baseDamage = 0;
         this._baseArmorClass = 10;
         this._baseAttackDamage = 1;
+        this._xp = 0;
 
         this.name = "";
-
-        this._abilities = new Map([
-            [ AbilityType.Strength, new Ability(AbilityType.Strength) ],
-            [ AbilityType.Dexterity, new Ability(AbilityType.Dexterity) ],
-            [ AbilityType.Constitution, new Ability(AbilityType.Constitution) ],
-            [ AbilityType.Wisdom, new Ability(AbilityType.Wisdom) ],
-            [ AbilityType.Intelligence, new Ability(AbilityType.Intelligence) ],
-            [ AbilityType.Charisma, new Ability(AbilityType.Charisma) ]
-        ]);
     }
 
     public get alignment(): Alignment {
@@ -36,7 +29,7 @@ export default class Hero {
 
     public set alignment(v: Alignment) {
         const vals = Object.values(Alignment);
-        const found = !!vals.find(u => u === v);
+        const found = !!vals.find((u) => u === v);
         if (!found) {
             throw `Invalid value (${v})!`;
         }
@@ -44,11 +37,9 @@ export default class Hero {
         this._alignment = v;
     }
 
-    
-    public get armorClass() : number {
+    public get armorClass(): number {
         return this._baseArmorClass + this.getModifierForAbility(AbilityType.Dexterity);
     }
-    
 
     public get hitPoints(): number {
         return Math.max(this._baseHitPoints + this.getModifierForAbility(AbilityType.Constitution), 1);
@@ -62,32 +53,27 @@ export default class Hero {
         return this.currentHitPoints > 0;
     }
 
-    
-    public get attackModifier() : number {
+    public get attackModifier(): number {
         return this.getModifierForAbility(AbilityType.Strength);
     }
-    
-    
-    public get attackDamage() : number {
+
+    public get attackDamage(): number {
         return Math.max(this._baseAttackDamage + this.getModifierForAbility(AbilityType.Strength), 1);
     }
 
-    public get critAttackDamage() : number {
-        return Math.max((this._baseAttackDamage * 2) + (this.getModifierForAbility(AbilityType.Strength) * 2), 1);
+    public get critAttackDamage(): number {
+        return Math.max(this._baseAttackDamage * 2 + this.getModifierForAbility(AbilityType.Strength) * 2, 1);
     }
-    
+
+    public get xp(): number {
+        return this._xp;
+    }
 
     damage(points: number): void {
         this._baseDamage += points;
     }
 
-    setAbility(abilityType: AbilityType, score: number) {
-        const theAbility = this._abilities.get(abilityType);
-        theAbility.score = score;
-        this._abilities.set(abilityType, theAbility);
-    }
-
-    getModifierForAbility(abilityType: AbilityType): number {
-        return this._abilities.get(abilityType).modifier;
+    addXp(experience: number) {
+        this._xp += experience;
     }
 }

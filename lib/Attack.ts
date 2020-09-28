@@ -10,15 +10,33 @@ export default class Attack {
     }
 
     resolve(roll: number): boolean {
-        const isHit = roll + this._attacker.attackModifier >= this._defender.armorClass;
-        const isCriticalHit = isHit && roll === 20;
+        const isCrit = this.isCriticalHit(roll);
+        const isHit = this.isHit(roll);
 
-        if (isCriticalHit) {
+        this.applyDamage(isHit, isCrit);
+
+        this.applyExperience();
+
+        return isHit;
+    }
+
+    private isCriticalHit(roll: number) {
+        return this.isHit(roll) && roll === 20;
+    }
+
+    private isHit(roll: number) {
+        return roll + this._attacker.attackModifier >= this._defender.armorClass;
+    }
+
+    private applyDamage(isHit: boolean, isCrit: boolean) {
+        if (isCrit) {
             this._defender.damage(this._attacker.critAttackDamage);
         } else if (isHit) {
             this._defender.damage(this._attacker.attackDamage);
         }
+    }
 
-        return isHit;
+    private applyExperience() {
+        this._attacker.addXp(10);
     }
 }

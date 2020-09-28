@@ -161,4 +161,22 @@ describe("Hero", () => {
             expect(sut.critAttackDamage).toBe(1);
         });
     });
+
+    describe("xp", () => {
+        it("defaults to", () => {
+            expect(sut.xp).toBe(0);
+        });
+
+        it("goes up when experience is added", () => {
+            sut.addXp(100);
+
+            expect(sut.xp).toBe(100);
+        });
+
+        it("goes up when experience is added more than once", () => {
+            sut.addXp(100);
+            sut.addXp(50);
+            expect(sut.xp).toBe(150);
+        });
+    });
 });
