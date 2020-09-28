@@ -3,7 +3,7 @@
  */
 
 import { Hero, Alignment } from "../evercraft";
-import { AbilityType } from "../lib/Enums";
+import { AbilityType, ClassType } from "../lib/Enums";
 
 describe("Hero", () => {
     let sut: Hero;
@@ -37,6 +37,27 @@ describe("Hero", () => {
 
         it("throws on setting invalid value", () => {
             expect(() => (sut.alignment = 0)).toThrowError("Invalid value (0)!");
+        });
+    });
+
+    describe("#class", () => {
+        it("defaults to None", () => {
+            expect(sut.class).toBe(ClassType.None);
+        });
+
+        it.each([
+            [ClassType.None, "None"],
+            [ClassType.Fighter, "Fighter"],
+            [ClassType.Rogue, "Rogue"],
+            [ClassType.Monk, "Monk"],
+            [ClassType.Paladin, "Paladin"]
+        ])("can be set to %s (%s)", (classType, _expected) => {
+            sut.class = classType;
+            expect(sut.class).toBe(classType);
+        });
+
+        it("throws on setting invalid class", () => {
+            expect(() => (sut.class = 0)).toThrowError("Invalid class (0)!");
         });
     });
 

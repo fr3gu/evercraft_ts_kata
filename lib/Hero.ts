@@ -1,4 +1,4 @@
-import { AbilityType, Alignment } from "./Enums";
+import { AbilityType, Alignment, ClassType } from "./Enums";
 import AbilityEntity from "./AbilityEntity";
 
 const LEVEL_XP = 1000;
@@ -9,14 +9,16 @@ const BASE_ATTACK_DMG = 1;
 export default class Hero extends AbilityEntity {
     private _xp: number;
     private _alignment: Alignment;
+    private _class: ClassType;
     private _currentDamage: number;
     
     name: string;
-
+    
     constructor() {
         super();
         this._xp = 0;
         this._alignment = Alignment.Neutral;
+        this._class = ClassType.None;
         this._currentDamage = 0;
         
         this.name = "";
@@ -43,6 +45,24 @@ export default class Hero extends AbilityEntity {
 
         this._alignment = v;
     }
+
+    
+    public get class() : ClassType {
+        return this._class;
+    }
+
+    
+    public set class(v : ClassType) {
+        const vals = Object.values(ClassType);
+        const found = !!vals.find((u) => u === v);
+        if (!found) {
+            throw `Invalid class (${v})!`;
+        }
+
+        this._class = v;
+    }
+    
+    
 
     public get armorClass(): number {
         return BASE_ARMOR_CLASS + this.getModifierForAbility(AbilityType.Dexterity);
