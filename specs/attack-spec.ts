@@ -2,8 +2,7 @@
  * @jest-environment node
  */
 
-import { Attack, Hero } from "../evercraft";
-import { AbilityType } from "../lib/Enums";
+import { Attack, Hero, AbilityType } from "../evercraft";
 
 describe("Attack", () => {
     let sut: Attack, attacker: Hero, defender: Hero;
