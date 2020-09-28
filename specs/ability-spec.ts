@@ -11,9 +11,7 @@ describe("Ability", () => {
     beforeEach(() => sut = new Ability());
     
     describe("#score", () => {
-        it("defaults to 10", () => {
-            expect(sut.score).toBe(10);
-        });
+        it("defaults to 10", () => expect(sut.score).toBe(10));
 
         it("can be changed", () => {
             sut.score = 15;
@@ -21,11 +19,13 @@ describe("Ability", () => {
         });
 
         it("cannot be less than 1", () => {
-            expect(() => sut.score = 0).toThrow("Invalid score (0)!");
+            expect(() => sut.score = 0)
+                .toThrow("Invalid score (0)!");
         });
         
         it("cannot be more than 20", () => {
-            expect(() => sut.score = 21).toThrow("Invalid score (21)!");
+            expect(() => sut.score = 21)
+                .toThrow("Invalid score (21)!");
         });
     });
 

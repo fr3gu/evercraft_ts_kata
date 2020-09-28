@@ -10,9 +10,7 @@ describe("Hero", () => {
     beforeEach(() => (sut = new Hero()));
 
     describe("#alignment", () => {
-        it("defaults to Neutral", () => {
-            expect(sut.alignment).toBe(Alignment.Neutral);
-        });
+        it("defaults to Neutral", () => expect(sut.alignment).toBe(Alignment.Neutral));
 
         it.each([
             [Alignment.Neutral, "Neutral"],
@@ -24,7 +22,8 @@ describe("Hero", () => {
         });
 
         it("throws on setting invalid value", () => {
-            expect(() => (sut.alignment = 0)).toThrowError("Invalid value (0)!");
+            expect(() => (sut.alignment = 0))
+                .toThrowError("Invalid value (0)!");
         });
     });
 });

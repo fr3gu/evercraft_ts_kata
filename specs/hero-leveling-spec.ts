@@ -10,9 +10,7 @@ describe("Hero", () => {
     beforeEach(() => (sut = new Hero()));
 
     describe("#xp", () => {
-        it("defaults to", () => {
-            expect(sut.xp).toBe(0);
-        });
+        it("defaults to", () => expect(sut.xp).toBe(0));
 
         it("goes up when experience is added", () => {
             sut.addXp(100);
