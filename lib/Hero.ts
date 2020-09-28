@@ -1,25 +1,24 @@
 import { AbilityType, Alignment } from "./Enums";
 import AbilityEntity from "./AbilityEntity";
 
+const LEVEL_XP = 1000;
+const BASE_ARMOR_CLASS = 10;
+const BASE_HITPOINTS = 5;
+const BASE_ATTACK_DMG = 1;
+
 export default class Hero extends AbilityEntity {
     private _xp: number;
     private _alignment: Alignment;
-    private _baseArmorClass: number;
-    private _baseHitPoints: number;
-    private _baseDamage: number;
-    private _baseAttackDamage: number;
-
+    private _currentDamage: number;
+    
     name: string;
 
     constructor() {
         super();
         this._xp = 0;
         this._alignment = Alignment.Neutral;
-        this._baseArmorClass = 10;
-        this._baseHitPoints = 5;
-        this._baseDamage = 0;
-        this._baseAttackDamage = 1;
-
+        this._currentDamage = 0;
+        
         this.name = "";
     }
 
@@ -28,7 +27,7 @@ export default class Hero extends AbilityEntity {
     }
 
     public get level(): number {
-        return Math.floor(this._xp / 1000) + 1;
+        return Math.floor(this._xp / LEVEL_XP) + 1;
     }
 
     public get alignment(): Alignment {
@@ -46,15 +45,15 @@ export default class Hero extends AbilityEntity {
     }
 
     public get armorClass(): number {
-        return this._baseArmorClass + this.getModifierForAbility(AbilityType.Dexterity);
+        return BASE_ARMOR_CLASS + this.getModifierForAbility(AbilityType.Dexterity);
     }
 
     public get hitPoints(): number {
-        return Math.max(this._baseHitPoints + this.getModifierForAbility(AbilityType.Constitution), 1) * this.level;
+        return Math.max(BASE_HITPOINTS + this.getModifierForAbility(AbilityType.Constitution), 1) * this.level;
     }
 
     public get currentHitPoints(): number {
-        return this.hitPoints - this._baseDamage;
+        return this.hitPoints - this._currentDamage;
     }
 
     public get isAlive(): boolean {
@@ -62,15 +61,15 @@ export default class Hero extends AbilityEntity {
     }
 
     public get attackModifier(): number {
-        return this.getModifierForAbility(AbilityType.Strength);
+        return this.getModifierForAbility(AbilityType.Strength) + Math.floor(this.level / 2);
     }
 
     public get attackDamage(): number {
-        return Math.max(this._baseAttackDamage + this.getModifierForAbility(AbilityType.Strength), 1);
+        return Math.max(BASE_ATTACK_DMG + this.getModifierForAbility(AbilityType.Strength), 1);
     }
 
     public get critAttackDamage(): number {
-        return Math.max(this._baseAttackDamage * 2 + this.getModifierForAbility(AbilityType.Strength) * 2, 1);
+        return Math.max(BASE_ATTACK_DMG * 2 + this.getModifierForAbility(AbilityType.Strength) * 2, 1);
     }
 
     setXp(experience: number) {
@@ -82,8 +81,6 @@ export default class Hero extends AbilityEntity {
     }
 
     doDamage(points: number): void {
-        this._baseDamage += points;
+        this._currentDamage += points;
     }
-
-    
 }

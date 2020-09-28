@@ -68,7 +68,7 @@ describe("Hero", () => {
             [ "goes up with level even if sickly", 2000, 6, 9 ],
             [ "cannot go below zero regardless of const", 2000, 1, 3 ],
         ])("%s", (_msg, xp, con, hp) => {
-            sut.addXp(xp);
+            sut.setXp(xp);
             sut.setAbility(AbilityType.Constitution, con);
             expect(sut.hitPoints).toBe(hp);
         });
@@ -112,18 +112,21 @@ describe("Hero", () => {
     });
 
     describe("#attackModifier", () => {
-        it("defaults to 0", () => {
-            expect(sut.attackModifier).toBe(0);
-        });
 
-        it("goes up when hero is beefy", () => {
-            sut.setAbility(AbilityType.Strength, 14);
-            expect(sut.attackModifier).toBe(2);
-        });
-
-        it("goes down when hero is whimpy", () => {
-            sut.setAbility(AbilityType.Strength, 6);
-            expect(sut.attackModifier).toBe(-2);
+        it.each([
+            [ "defaults to 0", 0, 10, 0 ],
+            [ "goes up when hero is beefy", 0, 14, 2 ],
+            [ "goes down when hero is whimpy", 0, 6, -2 ],
+            [ "goes up on even levels", 1000, 10, 1 ],
+            [ "doesn't go up on odd levels", 2000, 10, 1 ],
+            [ "goes up on even higher even levels", 3000, 10, 2 ],
+            [ "goes up with levels and beeftitude", 3000, 14, 4 ],
+            [ "goes up with levels and down with wimpiness", 3000, 6, 0 ],
+            
+        ])("%s", (_msg, xp, str, am) => {
+            sut.setXp(xp);
+            sut.setAbility(AbilityType.Strength, str);
+            expect(sut.attackModifier).toBe(am);
         });
     });
 

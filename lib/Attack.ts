@@ -1,5 +1,8 @@
 import Hero from "./Hero";
 
+const XP_PER_ATTACK = 10;
+const CRITICAL_ROLL = 20;
+
 export default class Attack {
     private _attacker: Hero;
     private _defender: Hero;
@@ -21,7 +24,7 @@ export default class Attack {
     }
 
     private isCriticalHit(roll: number) {
-        return this.isHit(roll) && roll === 20;
+        return this.isHit(roll) && roll === CRITICAL_ROLL;
     }
 
     private isHit(roll: number) {
@@ -37,6 +40,6 @@ export default class Attack {
     }
 
     private applyExperience() {
-        this._attacker.addXp(10);
+        this._attacker.addXp(XP_PER_ATTACK);
     }
 }
