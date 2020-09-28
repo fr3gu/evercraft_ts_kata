@@ -2,25 +2,33 @@ import { AbilityType, Alignment } from "./Enums";
 import AbilityEntity from "./AbilityEntity";
 
 export default class Hero extends AbilityEntity {
-    private _alignment: Alignment;
-    private _baseDamage: number;
-    private _baseHitPoints: number;
-    private _baseArmorClass: number;
-    private _baseAttackDamage: number;
     private _xp: number;
+    private _alignment: Alignment;
+    private _baseArmorClass: number;
+    private _baseHitPoints: number;
+    private _baseDamage: number;
+    private _baseAttackDamage: number;
 
     name: string;
 
     constructor() {
         super();
+        this._xp = 0;
         this._alignment = Alignment.Neutral;
+        this._baseArmorClass = 10;
         this._baseHitPoints = 5;
         this._baseDamage = 0;
-        this._baseArmorClass = 10;
         this._baseAttackDamage = 1;
-        this._xp = 0;
 
         this.name = "";
+    }
+
+    public get xp(): number {
+        return this._xp;
+    }
+
+    public get level(): number {
+        return Math.floor(this._xp / 1000) + 1;
     }
 
     public get alignment(): Alignment {
@@ -42,7 +50,7 @@ export default class Hero extends AbilityEntity {
     }
 
     public get hitPoints(): number {
-        return Math.max(this._baseHitPoints + this.getModifierForAbility(AbilityType.Constitution), 1);
+        return Math.max(this._baseHitPoints + this.getModifierForAbility(AbilityType.Constitution), 1) * this.level;
     }
 
     public get currentHitPoints(): number {
@@ -65,15 +73,17 @@ export default class Hero extends AbilityEntity {
         return Math.max(this._baseAttackDamage * 2 + this.getModifierForAbility(AbilityType.Strength) * 2, 1);
     }
 
-    public get xp(): number {
-        return this._xp;
-    }
-
-    damage(points: number): void {
-        this._baseDamage += points;
+    setXp(experience: number) {
+        this._xp = experience;
     }
 
     addXp(experience: number) {
         this._xp += experience;
     }
+
+    doDamage(points: number): void {
+        this._baseDamage += points;
+    }
+
+    
 }

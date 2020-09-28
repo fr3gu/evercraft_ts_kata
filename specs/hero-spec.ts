@@ -57,38 +57,35 @@ describe("Hero", () => {
     });
 
     describe("#hitPoints", () => {
-        it("defaults to 5", () => {
-            expect(sut.hitPoints).toBe(5);
-        });
 
-        it("goes up when hero is buff", () => {
-            sut.setAbility(AbilityType.Constitution, 15);
-            expect(sut.hitPoints).toBe(7);
-        });
-
-        it("goes up when hero is sickly", () => {
-            sut.setAbility(AbilityType.Constitution, 6);
-            expect(sut.hitPoints).toBe(3);
-        });
-
-        it("cannot go below zero regardless of const", () => {
-            sut.setAbility(AbilityType.Constitution, 1);
-            expect(sut.hitPoints).toBe(1);
+        it.each([
+            [ "defaults to 5", 0, 10, 5 ],
+            [ "goes up when hero is buff", 0, 15, 7 ],
+            [ "goes up when hero is sickly", 0, 6, 3 ],
+            [ "cannot go below zero regardless of const", 0, 1, 1 ],
+            [ "goes up with levels", 2000, 10, 15 ],
+            [ "goes up with levels and bufftitude", 2000, 15, 21 ],
+            [ "goes up with level even if sickly", 2000, 6, 9 ],
+            [ "cannot go below zero regardless of const", 2000, 1, 3 ],
+        ])("%s", (_msg, xp, con, hp) => {
+            sut.addXp(xp);
+            sut.setAbility(AbilityType.Constitution, con);
+            expect(sut.hitPoints).toBe(hp);
         });
 
         it("doesn't go down when damaged", () => {
-            sut.damage(3);
+            sut.doDamage(3);
             expect(sut.hitPoints).toBe(5);
         });
     });
 
-    describe("#hitPoints", () => {
+    describe("#currentHitPoints", () => {
         it("defaults to 5", () => {
             expect(sut.currentHitPoints).toBe(5);
         });
 
         it("goes down when damaged", () => {
-            sut.damage(3);
+            sut.doDamage(3);
             expect(sut.currentHitPoints).toBe(2);
         });
     });
@@ -99,17 +96,17 @@ describe("Hero", () => {
         });
 
         it("is still alive", () => {
-            sut.damage(3);
+            sut.doDamage(3);
             expect(sut.isAlive).toBe(true);
         });
 
         it("is dead when really damaged", () => {
-            sut.damage(5);
+            sut.doDamage(5);
             expect(sut.isAlive).toBe(false);
         });
 
         it("is dead when really, really damaged", () => {
-            sut.damage(6);
+            sut.doDamage(6);
             expect(sut.isAlive).toBe(false);
         });
     });
@@ -162,14 +159,13 @@ describe("Hero", () => {
         });
     });
 
-    describe("xp", () => {
+    describe("#xp", () => {
         it("defaults to", () => {
             expect(sut.xp).toBe(0);
         });
 
         it("goes up when experience is added", () => {
             sut.addXp(100);
-
             expect(sut.xp).toBe(100);
         });
 
@@ -177,6 +173,21 @@ describe("Hero", () => {
             sut.addXp(100);
             sut.addXp(50);
             expect(sut.xp).toBe(150);
+        });
+    });
+
+    describe("#level", () => {
+        it.each([
+            [ 0, 1 ],
+            [ 500, 1 ],
+            [ 999, 1 ],
+            [ 1000, 2 ],
+            [ 1500, 2 ],
+            [ 2000, 3 ],
+            [ 5000, 6 ],
+        ])("has expected value", (xp, level) => {
+            sut.addXp(xp);
+            expect(sut.level).toBe(level);
         });
     });
 });

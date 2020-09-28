@@ -30,9 +30,9 @@ export default class Attack {
 
     private applyDamage(isHit: boolean, isCrit: boolean) {
         if (isCrit) {
-            this._defender.damage(this._attacker.critAttackDamage);
+            this._defender.doDamage(this._attacker.critAttackDamage);
         } else if (isHit) {
-            this._defender.damage(this._attacker.attackDamage);
+            this._defender.doDamage(this._attacker.attackDamage);
         }
     }
 
