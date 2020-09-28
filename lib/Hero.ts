@@ -1,33 +1,33 @@
-import { Alignment } from "./Enums";
+import { AbilityType, Alignment } from "./Enums";
 import Ability from "./Ability";
-
-type AbilityTableRow = { key: Ability, value: number };
 
 export default class Hero {
     private _alignment: Alignment;
-    private _damage: number;
-    private _hitPoints: number;
-    private _abilities: AbilityTableRow[];
+    private _baseDamage: number;
+    private _baseHitPoints: number;
+    private _abilities: Map<AbilityType, Ability>;
+    private _baseArmorClass: number;
+    private _baseAttackDamage: number;
     
     name: string;
-    armorClass: number;
-
+    
     constructor() {
         this._alignment = Alignment.Neutral;
-        this._hitPoints = 5
-        this._damage = 0;
+        this._baseHitPoints = 5
+        this._baseDamage = 0;
+        this._baseArmorClass = 10;
+        this._baseAttackDamage = 1;
 
         this.name = "";
-        this.armorClass = 10;
 
-        this._abilities = [
-            { key: Ability.Strength, value: 10 },
-            { key: Ability.Dexterity, value: 10 },
-            { key: Ability.Constitution, value: 10 },
-            { key: Ability.Wisdom, value: 10 },
-            { key: Ability.Intelligence, value: 10 },
-            { key: Ability.Charisma, value: 10 }
-        ];
+        this._abilities = new Map([
+            [ AbilityType.Strength, new Ability(AbilityType.Strength) ],
+            [ AbilityType.Dexterity, new Ability(AbilityType.Dexterity) ],
+            [ AbilityType.Constitution, new Ability(AbilityType.Constitution) ],
+            [ AbilityType.Wisdom, new Ability(AbilityType.Wisdom) ],
+            [ AbilityType.Intelligence, new Ability(AbilityType.Intelligence) ],
+            [ AbilityType.Charisma, new Ability(AbilityType.Charisma) ]
+        ]);
     }
 
     public get alignment(): Alignment {
@@ -44,20 +44,50 @@ export default class Hero {
         this._alignment = v;
     }
 
-    public get maxHitPoints(): number {
-        return this._hitPoints;
+    
+    public get armorClass() : number {
+        return this._baseArmorClass + this.getModifierForAbility(AbilityType.Dexterity);
+    }
+    
+
+    public get hitPoints(): number {
+        return Math.max(this._baseHitPoints + this.getModifierForAbility(AbilityType.Constitution), 1);
     }
 
-    public get availableHitPoints(): number {
-        return this._hitPoints - this._damage;
+    public get currentHitPoints(): number {
+        return this.hitPoints - this._baseDamage;
     }
 
     public get isAlive(): boolean {
-        return this.availableHitPoints > 0;
+        return this.currentHitPoints > 0;
     }
 
-    damage(points: number): void {
-        this._damage += points;
+    
+    public get attackModifier() : number {
+        return this.getModifierForAbility(AbilityType.Strength);
     }
     
+    
+    public get attackDamage() : number {
+        return Math.max(this._baseAttackDamage + this.getModifierForAbility(AbilityType.Strength), 1);
+    }
+
+    public get critAttackDamage() : number {
+        return Math.max((this._baseAttackDamage * 2) + (this.getModifierForAbility(AbilityType.Strength) * 2), 1);
+    }
+    
+
+    damage(points: number): void {
+        this._baseDamage += points;
+    }
+
+    setAbility(abilityType: AbilityType, score: number) {
+        const theAbility = this._abilities.get(abilityType);
+        theAbility.score = score;
+        this._abilities.set(abilityType, theAbility);
+    }
+
+    getModifierForAbility(abilityType: AbilityType): number {
+        return this._abilities.get(abilityType).modifier;
+    }
 }

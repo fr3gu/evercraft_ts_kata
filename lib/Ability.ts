@@ -3,11 +3,10 @@ import { AbilityType } from "./Enums";
 export default class Ability {
     private _score: number;
     private _type: AbilityType;
-    private _modifier: number;
-
-    constructor() {
-        this._score = 10;
-        this._type = AbilityType.Unknown;
+    
+    constructor(type: AbilityType = AbilityType.Unknown, score: number = 10) {
+        this._type = type;
+        this._score = score;
     }
 
     public get score(): number {

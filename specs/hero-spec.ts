@@ -3,12 +3,12 @@
  */
 
 import { Hero, Alignment } from "../evercraft";
+import { AbilityType } from "../lib/Enums";
 
 describe("Hero", () => {
-
     let sut: Hero;
 
-    beforeEach(() => sut = new Hero());
+    beforeEach(() => (sut = new Hero()));
 
     describe("#name", () => {
         it("defaults to empty string", () => {
@@ -29,14 +29,14 @@ describe("Hero", () => {
         it.each([
             [Alignment.Neutral, "Neutral"],
             [Alignment.Good, "Good"],
-            [Alignment.Evil, "Evil"]
+            [Alignment.Evil, "Evil"],
         ])("can be set to %s (%s)", (alignment, _expected) => {
             sut.alignment = alignment;
             expect(sut.alignment).toBe(alignment);
         });
 
         it("throws on setting invalid value", () => {
-            expect(() => sut.alignment = 0).toThrowError("Invalid value (0)!");
+            expect(() => (sut.alignment = 0)).toThrowError("Invalid value (0)!");
         });
     });
 
@@ -44,16 +44,52 @@ describe("Hero", () => {
         it("defaults to 10", () => {
             expect(sut.armorClass).toBe(10);
         });
+
+        it("include dexterity modifier when hero is zippy", () => {
+            sut.setAbility(AbilityType.Dexterity, 14);
+            expect(sut.armorClass).toBe(12);
+        });
+
+        it("include dexterity modifier when hero is sluggish", () => {
+            sut.setAbility(AbilityType.Dexterity, 6);
+            expect(sut.armorClass).toBe(8);
+        });
     });
 
     describe("#hitPoints", () => {
         it("defaults to 5", () => {
-            expect(sut.availableHitPoints).toBe(5);
+            expect(sut.hitPoints).toBe(5);
         });
 
-        it("has fewer hitPoints", () => {
-            sut.damage(3)
-            expect(sut.availableHitPoints).toBe(2);
+        it("goes up when hero is buff", () => {
+            sut.setAbility(AbilityType.Constitution, 15);
+            expect(sut.hitPoints).toBe(7);
+        });
+
+        it("goes up when hero is sickly", () => {
+            sut.setAbility(AbilityType.Constitution, 6);
+            expect(sut.hitPoints).toBe(3);
+        });
+
+        it("cannot go below zero regardless of const", () => {
+            sut.setAbility(AbilityType.Constitution, 1);
+            expect(sut.hitPoints).toBe(1);
+        });
+
+        it("doesn't go down when damaged", () => {
+            sut.damage(3);
+            expect(sut.hitPoints).toBe(5);
+        });
+    });
+
+    describe("#hitPoints", () => {
+        it("defaults to 5", () => {
+            expect(sut.currentHitPoints).toBe(5);
+        });
+
+        it("goes down when damaged", () => {
+            sut.damage(3);
+            expect(sut.currentHitPoints).toBe(2);
         });
     });
 
@@ -75,6 +111,54 @@ describe("Hero", () => {
         it("is dead when really, really damaged", () => {
             sut.damage(6);
             expect(sut.isAlive).toBe(false);
+        });
+    });
+
+    describe("#attackModifier", () => {
+        it("defaults to 0", () => {
+            expect(sut.attackModifier).toBe(0);
+        });
+
+        it("goes up when hero is beefy", () => {
+            sut.setAbility(AbilityType.Strength, 14);
+            expect(sut.attackModifier).toBe(2);
+        });
+
+        it("goes down when hero is whimpy", () => {
+            sut.setAbility(AbilityType.Strength, 6);
+            expect(sut.attackModifier).toBe(-2);
+        });
+    });
+
+    describe("#attackDamage", () => {
+        it("defaults to 1", () => {
+            expect(sut.attackDamage).toBe(1);
+        });
+
+        it("goes up when hero is beefy", () => {
+            sut.setAbility(AbilityType.Strength, 14);
+            expect(sut.attackDamage).toBe(3);
+        });
+
+        it("cannot go below 1", () => {
+            sut.setAbility(AbilityType.Strength, 3);
+            expect(sut.attackDamage).toBe(1);
+        });
+    });
+
+    describe("#critAttackDamage", () => {
+        it("defaults to 2", () => {
+            expect(sut.critAttackDamage).toBe(2);
+        });
+
+        it("goes up when hero is beefy", () => {
+            sut.setAbility(AbilityType.Strength, 14);
+            expect(sut.critAttackDamage).toBe(6);
+        });
+
+        it("cannot go below 1", () => {
+            sut.setAbility(AbilityType.Strength, 3);
+            expect(sut.critAttackDamage).toBe(1);
         });
     });
 });
