@@ -5,4 +5,5 @@ module.exports = {
     },
     testRegex: "(/specs/).*-spec.ts$",
     moduleFileExtensions: ["ts", "js"],
+    setupFilesAfterEnv: [ "<rootDir>/specs/spec-helper.js" ]
   }

@@ -4,6 +4,8 @@
 
 import { Hero, AbilityType, ClassType  } from "../evercraft";
 
+declare var global: any;
+
 describe("Hero", () => {
     let sut: Hero;
 
@@ -60,17 +62,17 @@ describe("Hero", () => {
     describe("#attackModifier", () => {
 
         it.each([
-            [ "defaults to 0", 0, 10, 0 ],
-            [ "goes up when hero is beefy", 0, 14, 2 ],
-            [ "goes down when hero is whimpy", 0, 6, -2 ],
-            [ "goes up on even levels", 1000, 10, 1 ],
-            [ "doesn't go up on odd levels", 2000, 10, 1 ],
-            [ "goes up on even higher even levels", 3000, 10, 2 ],
-            [ "goes up with levels and beeftitude", 3000, 14, 4 ],
-            [ "goes up with levels and down with wimpiness", 3000, 6, 0 ],
+            [ "defaults to 0", 1, 10, 0 ],
+            [ "goes up when hero is beefy", 1, 14, 2 ],
+            [ "goes down when hero is whimpy", 1, 6, -2 ],
+            [ "goes up on even levels", 2, 10, 1 ],
+            [ "doesn't go up on odd levels", 3, 10, 1 ],
+            [ "goes up on even higher even levels", 4, 10, 2 ],
+            [ "goes up with levels and beeftitude", 4, 14, 4 ],
+            [ "goes up with levels and down with wimpiness", 4, 6, 0 ],
             
-        ])("%s", (_msg, xp, str, am) => {
-            sut.setXp(xp);
+        ])("%s", (_msg, lvl, str, am) => {
+            global.makeLevel(sut, lvl);
             sut.setAbility(AbilityType.Strength, str);
             expect(sut.attackModifier).toBe(am);
         });

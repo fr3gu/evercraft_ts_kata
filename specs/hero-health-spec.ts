@@ -4,6 +4,8 @@
 
 import { Hero, AbilityType } from "../evercraft";
 
+declare var global: any;
+
 describe("Hero", () => {
     let sut: Hero;
 
@@ -11,16 +13,16 @@ describe("Hero", () => {
 
     describe("#hitPoints", () => {
         it.each([
-            ["defaults to 5", 0, 10, 5],
-            ["goes up when hero is buff", 0, 15, 7],
-            ["goes up when hero is sickly", 0, 6, 3],
-            ["cannot go below zero regardless of const", 0, 1, 1],
-            ["goes up with levels", 2000, 10, 15],
-            ["goes up with levels and bufftitude", 2000, 15, 21],
-            ["goes up with level even if sickly", 2000, 6, 9],
-            ["cannot go below zero regardless of const", 2000, 1, 3],
-        ])("%s", (_msg, xp, con, hp) => {
-            sut.setXp(xp);
+            ["defaults to 5", 1, 10, 5],
+            ["goes up when hero is buff", 1, 15, 7],
+            ["goes up when hero is sickly", 1, 6, 3],
+            ["cannot go below zero regardless of const", 1, 1, 1],
+            ["goes up with levels", 3, 10, 15],
+            ["goes up with levels and bufftitude", 3, 15, 21],
+            ["goes up with level even if sickly", 3, 6, 9],
+            ["cannot go below zero regardless of const", 3, 1, 3],
+        ])("%s", (_msg, lvl, con, hp) => {
+            global.makeLevel(sut, lvl);
             sut.setAbility(AbilityType.Constitution, con);
             expect(sut.hitPoints).toBe(hp);
         });
