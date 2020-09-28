@@ -3,12 +3,7 @@
   "version": "1.0.0",
   "description": "The EverCraft kata",
   "scripts": {
-    "test": "jest"
-  },
-  "jest": {
-    "testMatch": [
-      "**/spec/**/*-spec.ts"
-    ]
+    "test": "jest --watchAll --runInBand"
   },
   "author": "fr3gu <fr3gu77@gmail.com>",
   "license": "ISC",
