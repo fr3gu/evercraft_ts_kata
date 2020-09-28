@@ -2,8 +2,7 @@
  * @jest-environment node
  */
 
-import { Hero, Alignment } from "../evercraft";
-import { AbilityType } from "../lib/Enums";
+import { Hero, AbilityType, ClassType  } from "../evercraft";
 
 describe("Hero", () => {
     let sut: Hero;
@@ -21,22 +20,24 @@ describe("Hero", () => {
         });
     });
 
-    describe("#alignment", () => {
-        it("defaults to Neutral", () => {
-            expect(sut.alignment).toBe(Alignment.Neutral);
+    describe("#class", () => {
+        it("defaults to None", () => {
+            expect(sut.class).toBe(ClassType.None);
         });
 
         it.each([
-            [Alignment.Neutral, "Neutral"],
-            [Alignment.Good, "Good"],
-            [Alignment.Evil, "Evil"],
-        ])("can be set to %s (%s)", (alignment, _expected) => {
-            sut.alignment = alignment;
-            expect(sut.alignment).toBe(alignment);
+            [ClassType.None, "None"],
+            [ClassType.Fighter, "Fighter"],
+            [ClassType.Rogue, "Rogue"],
+            [ClassType.Monk, "Monk"],
+            [ClassType.Paladin, "Paladin"]
+        ])("can be set to %s (%s)", (classType, _expected) => {
+            sut.class = classType;
+            expect(sut.class).toBe(classType);
         });
 
-        it("throws on setting invalid value", () => {
-            expect(() => (sut.alignment = 0)).toThrowError("Invalid value (0)!");
+        it("throws on setting invalid class", () => {
+            expect(() => (sut.class = 0)).toThrowError("Invalid class (0)!");
         });
     });
 
@@ -56,77 +57,22 @@ describe("Hero", () => {
         });
     });
 
-    describe("#hitPoints", () => {
-        it("defaults to 5", () => {
-            expect(sut.hitPoints).toBe(5);
-        });
-
-        it("goes up when hero is buff", () => {
-            sut.setAbility(AbilityType.Constitution, 15);
-            expect(sut.hitPoints).toBe(7);
-        });
-
-        it("goes up when hero is sickly", () => {
-            sut.setAbility(AbilityType.Constitution, 6);
-            expect(sut.hitPoints).toBe(3);
-        });
-
-        it("cannot go below zero regardless of const", () => {
-            sut.setAbility(AbilityType.Constitution, 1);
-            expect(sut.hitPoints).toBe(1);
-        });
-
-        it("doesn't go down when damaged", () => {
-            sut.damage(3);
-            expect(sut.hitPoints).toBe(5);
-        });
-    });
-
-    describe("#hitPoints", () => {
-        it("defaults to 5", () => {
-            expect(sut.currentHitPoints).toBe(5);
-        });
-
-        it("goes down when damaged", () => {
-            sut.damage(3);
-            expect(sut.currentHitPoints).toBe(2);
-        });
-    });
-
-    describe("isAlive", () => {
-        it("defaults to 'true'", () => {
-            expect(sut.isAlive).toBe(true);
-        });
-
-        it("is still alive", () => {
-            sut.damage(3);
-            expect(sut.isAlive).toBe(true);
-        });
-
-        it("is dead when really damaged", () => {
-            sut.damage(5);
-            expect(sut.isAlive).toBe(false);
-        });
-
-        it("is dead when really, really damaged", () => {
-            sut.damage(6);
-            expect(sut.isAlive).toBe(false);
-        });
-    });
-
     describe("#attackModifier", () => {
-        it("defaults to 0", () => {
-            expect(sut.attackModifier).toBe(0);
-        });
 
-        it("goes up when hero is beefy", () => {
-            sut.setAbility(AbilityType.Strength, 14);
-            expect(sut.attackModifier).toBe(2);
-        });
-
-        it("goes down when hero is whimpy", () => {
-            sut.setAbility(AbilityType.Strength, 6);
-            expect(sut.attackModifier).toBe(-2);
+        it.each([
+            [ "defaults to 0", 0, 10, 0 ],
+            [ "goes up when hero is beefy", 0, 14, 2 ],
+            [ "goes down when hero is whimpy", 0, 6, -2 ],
+            [ "goes up on even levels", 1000, 10, 1 ],
+            [ "doesn't go up on odd levels", 2000, 10, 1 ],
+            [ "goes up on even higher even levels", 3000, 10, 2 ],
+            [ "goes up with levels and beeftitude", 3000, 14, 4 ],
+            [ "goes up with levels and down with wimpiness", 3000, 6, 0 ],
+            
+        ])("%s", (_msg, xp, str, am) => {
+            sut.setXp(xp);
+            sut.setAbility(AbilityType.Strength, str);
+            expect(sut.attackModifier).toBe(am);
         });
     });
 

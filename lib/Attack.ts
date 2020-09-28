@@ -1,5 +1,8 @@
 import Hero from "./Hero";
 
+const XP_PER_ATTACK = 10;
+const CRITICAL_ROLL = 20;
+
 export default class Attack {
     private _attacker: Hero;
     private _defender: Hero;
@@ -10,15 +13,33 @@ export default class Attack {
     }
 
     resolve(roll: number): boolean {
-        const isHit = roll + this._attacker.attackModifier >= this._defender.armorClass;
-        const isCriticalHit = isHit && roll === 20;
+        const isCrit = this.isCriticalHit(roll);
+        const isHit = this.isHit(roll);
 
-        if (isCriticalHit) {
-            this._defender.damage(this._attacker.critAttackDamage);
-        } else if (isHit) {
-            this._defender.damage(this._attacker.attackDamage);
-        }
+        this.applyDamage(isHit, isCrit);
+
+        this.applyExperience();
 
         return isHit;
+    }
+
+    private isCriticalHit(roll: number) {
+        return this.isHit(roll) && roll === CRITICAL_ROLL;
+    }
+
+    private isHit(roll: number) {
+        return roll + this._attacker.attackModifier >= this._defender.armorClass;
+    }
+
+    private applyDamage(isHit: boolean, isCrit: boolean) {
+        if (isCrit) {
+            this._defender.doDamage(this._attacker.critAttackDamage);
+        } else if (isHit) {
+            this._defender.doDamage(this._attacker.attackDamage);
+        }
+    }
+
+    private applyExperience() {
+        this._attacker.addXp(XP_PER_ATTACK);
     }
 }

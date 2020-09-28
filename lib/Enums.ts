@@ -15,3 +15,14 @@ export enum AbilityType {
     Intelligence = 5,
     Charisma = 6,
 }
+
+
+
+
+export enum ClassType {
+    None = 1,
+    Fighter = 2,
+    Rogue = 3,
+    Monk = 4,
+    Paladin = 5
+}
