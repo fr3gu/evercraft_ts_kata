@@ -1,3 +1,3 @@
 global.makeLevel = (hero, level) => {
-    hero.setXp((level - 1) * 1000);
+    hero.addXp((level - 1) * 1000);
 };
