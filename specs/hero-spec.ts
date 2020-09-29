@@ -60,19 +60,20 @@ describe("Hero", () => {
     });
 
     describe("#attackModifier", () => {
-
         it.each([
-            [ "defaults to 0", 1, 10, 0 ],
-            [ "goes up when hero is beefy", 1, 14, 2 ],
-            [ "goes down when hero is whimpy", 1, 6, -2 ],
-            [ "goes up on even levels", 2, 10, 1 ],
-            [ "doesn't go up on odd levels", 3, 10, 1 ],
-            [ "goes up on even higher even levels", 4, 10, 2 ],
-            [ "goes up with levels and beeftitude", 4, 14, 4 ],
-            [ "goes up with levels and down with wimpiness", 4, 6, 0 ],
-            
-        ])("%s", (_msg, lvl, str, am) => {
+            ["defaults to 0", ClassType.None, 1, 10, 0],
+            ["goes up when hero is beefy", ClassType.None, 1, 14, +2],
+            ["goes down when hero is whimpy", ClassType.None, 1, 6, -2],
+            ["goes up on even levels", ClassType.None, 2, 10, +1],
+            ["doesn't go up on odd levels", ClassType.None, 3, 10, +1],
+            ["goes up on even higher even levels", ClassType.None, 4, 10, +2],
+            ["goes up with levels and beefitude", ClassType.None, 4, 14, +4],
+            ["defaults to 1 for Fighter", ClassType.Fighter, 1, 10, +1],
+            ["goes up on every level on Fighter", ClassType.Fighter, 3, 10, +3],
+            ["goes up on strong, high-level Fighter", ClassType.Fighter, 4, 14, +6],
+        ])("%s", (_msg, charClass, lvl, str, am) => {
             global.makeLevel(sut, lvl);
+            sut.class = charClass;
             sut.setAbility(AbilityType.Strength, str);
             expect(sut.attackModifier).toBe(am);
         });
