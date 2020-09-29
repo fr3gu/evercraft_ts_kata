@@ -25,8 +25,11 @@ describe("Hero", () => {
             ["goes up by 10 with levels for Fighter", ClassType.Fighter, 3, 10, 30],
             ["goes up more for buff, high-level Fighter", ClassType.Fighter, 3, 14, 36],
             ["defaults to 6 for Monk", ClassType.Monk, 1, 10, 6],
-            // ["goes up by 6 with levels for Fighter", ClassType.Monk, 3, 10, 18],
-            // ["goes up more for buff, high-level Fighter", ClassType.Monk, 3, 14, 24],
+            ["goes up by 6 with levels for Monk", ClassType.Monk, 3, 10, 18],
+            ["goes up more for buff, high-level Monk", ClassType.Monk, 3, 14, 24],
+            ["defaults to 8 for Paladin", ClassType.Paladin, 1, 10, 8],
+            ["goes up by 8 with levels for Paladin", ClassType.Paladin, 3, 10, 24],
+            ["goes up more for buff, high-level Paladin", ClassType.Paladin, 3, 14, 30],
         ])("%s", (_msg, charClass, lvl, con, hp) => {
             global.makeLevel(sut, lvl);
             sut.class = charClass;

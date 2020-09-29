@@ -43,6 +43,8 @@ describe("Hero", () => {
                 ["goes up on third level for Monk", { ...defaults, class: ClassType.Monk, lvl: 3, expected: 2 }],
                 ["doesn't go up on fourth level for Monk", { ...defaults, class: ClassType.Monk, lvl: 4, expected: 2 }],
                 ["goes up on strong, high-level Monk", { ...defaults, class: ClassType.Monk, lvl: 10, str: 14, expected: 8 }],
+                ["defaults to 1 for Paladin", { ...defaults, class: ClassType.Paladin, expected: 1 }],
+                ["goes up on every level on Paladin", { ...defaults, class: ClassType.Paladin, lvl: 3, expected: +3 }],
             ])("%s", (_msg, data: IAttackModifierTestDefaults) => {
                 const { class: charClass, lvl, str, dex, expected } = data;
                 

@@ -11,6 +11,7 @@ const classFeatures = new Map<ClassType, { baseDamage: number; attackProgression
     [ClassType.Fighter, { baseDamage: BASE_ATTACK_DMG, attackProgression: 1, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
     [ClassType.Rogue, { baseDamage: BASE_ATTACK_DMG, attackProgression: ATTACK_PROGRESSION, attackAbilityMod: AbilityType.Dexterity, critMultiplier: 3 }],
     [ClassType.Monk, { baseDamage: 3, attackProgression: 2/3, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
+    [ClassType.Paladin, { baseDamage: 2, attackProgression: 1, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
 ]);
 
 export default class AttackSystem {
