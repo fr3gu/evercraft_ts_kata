@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { Hero, AlignmentType, ClassType } from "../evercraft";
+import { Hero, AlignmentType, ClassType } from "../../evercraft";
 
 describe("Hero", () => {
     let sut: Hero;

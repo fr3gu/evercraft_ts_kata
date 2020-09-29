@@ -1,4 +1,4 @@
-import { AbilityType } from "../Enums";
+import { AbilityType } from "./Enums";
 
 export default class Ability {
     private _score: number;

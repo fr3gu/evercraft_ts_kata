@@ -1,94 +1,70 @@
 import { AbilityType, AlignmentType, ClassType } from "./Enums";
-import Ability from "./Hero/Ability";
-import XpSystem from "./Hero/XpSystem";
-import HpSystem from "./Hero/HpSystem";
-import ArmorClass from "./Hero/ArmorClass";
-import AttackSystem from "./Hero/AttackSystem";
-import Alignment from "./Hero/Alignment";
-import CharClass from "./Hero/CharClass";
+import HeroAbility from "./Ability";
+import HeroXpSystem from "./Hero/XpSystem";
+import HeroHpSystem from "./Hero/HpSystem";
+import HeroArmorClass from "./Hero/ArmorClass";
+import HeroAttackSystem from "./Hero/AttackSystem";
+import HeroAlignment from "./Hero/Alignment";
+import HeroCharClass from "./Hero/CharClass";
 
 export default class Hero {
-    private _alignment: Alignment;
-    private _class: CharClass;
-    private _abilities: Map<AbilityType, Ability>;
-    private _xpSystem: XpSystem;
-    private _hp: HpSystem;
-    private _ac: ArmorClass;
-    private _attack: AttackSystem;
+    private _alignment: HeroAlignment;
+    private _class: HeroCharClass;
+    private _abilities: Map<AbilityType, HeroAbility>;
+    private _xpSystem: HeroXpSystem;
+    private _hp: HeroHpSystem;
+    private _ac: HeroArmorClass;
+    private _attack: HeroAttackSystem;
 
     name: string;
 
     constructor() {
         this._abilities = new Map([
-            [AbilityType.Strength, new Ability(AbilityType.Strength)],
-            [AbilityType.Dexterity, new Ability(AbilityType.Dexterity)],
-            [AbilityType.Constitution, new Ability(AbilityType.Constitution)],
-            [AbilityType.Wisdom, new Ability(AbilityType.Wisdom)],
-            [AbilityType.Intelligence, new Ability(AbilityType.Intelligence)],
-            [AbilityType.Charisma, new Ability(AbilityType.Charisma)],
+            [AbilityType.Strength, new HeroAbility(AbilityType.Strength)],
+            [AbilityType.Dexterity, new HeroAbility(AbilityType.Dexterity)],
+            [AbilityType.Constitution, new HeroAbility(AbilityType.Constitution)],
+            [AbilityType.Wisdom, new HeroAbility(AbilityType.Wisdom)],
+            [AbilityType.Intelligence, new HeroAbility(AbilityType.Intelligence)],
+            [AbilityType.Charisma, new HeroAbility(AbilityType.Charisma)],
         ]);
 
-        this._alignment = new Alignment(this);
-        this._class = new CharClass(this);
-        this._xpSystem = new XpSystem(this);
-        this._hp = new HpSystem(this);
-        this._ac = new ArmorClass(this);
-        this._attack = new AttackSystem(this);
+        this._alignment = new HeroAlignment(this);
+        this._class = new HeroCharClass(this);
+        this._xpSystem = new HeroXpSystem(this);
+        this._hp = new HeroHpSystem(this);
+        this._ac = new HeroArmorClass(this);
+        this._attack = new HeroAttackSystem(this);
 
         this.name = "";
     }
 
-    get alignment(): AlignmentType {
-        return this._alignment.value;
-    }
+    get alignment(): AlignmentType { return this._alignment.value; }
 
-    set alignment(v: AlignmentType) {
-        this._alignment.value = v;
-    }
+    set alignment(v: AlignmentType) { this._alignment.value = v; }
 
-    get class(): ClassType {
-        return this._class.value;
-    }
+    get class(): ClassType { return this._class.value; }
 
-    set class(v: ClassType) {
-        this._class.value = v;
-    }
+    set class(v: ClassType) { this._class.value = v; }
 
-    get xp(): number {
-        return this._xpSystem.xp;
-    }
+    get xp(): number { return this._xpSystem.xp; }
 
-    get level(): number {
-        return this._xpSystem.level;
-    }
+    get level(): number { return this._xpSystem.level; }
 
-    get armorClass(): number {
-        return this._ac.value;
-    }
+    get armorClass(): number { return this._ac.value; }
+    
+    get dexLessArmorClass(): number { return this._ac.dexLessValue; }
 
-    get hitPoints(): number {
-        return this._hp.maxHp;
-    }
+    get hitPoints(): number { return this._hp.maxHp; }
 
-    get currentHitPoints(): number {
-        return this._hp.currentHp;
-    }
+    get currentHitPoints(): number { return this._hp.currentHp; }
 
-    get isAlive(): boolean {
-        return this._hp.isAlive;
-    }
+    get isAlive(): boolean { return this._hp.isAlive; }
 
-    get attackModifier(): number {
-        return this._attack.attackModifier;
-    }
+    get attackModifier(): number { return this._attack.attackModifier; }
 
-    get attackDamage(): number {
-        return this._attack.attackDamage;
-    }
+    get attackDamage(): number { return this._attack.attackDamage; }
 
-    get critAttackDamage(): number {
-        return this._attack.critAttackDamage;
-    }
+    get critAttackDamage(): number { return this._attack.critAttackDamage; }
 
     addXp = (amount: number): void => this._xpSystem.addXp(amount);
 

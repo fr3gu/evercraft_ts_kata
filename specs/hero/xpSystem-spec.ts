@@ -2,14 +2,14 @@
  * @jest-environment node
  */
 
-import { Hero } from "../evercraft";
+import { Hero } from "../../evercraft";
 
 describe("Hero", () => {
     let sut: Hero;
 
     beforeEach(() => (sut = new Hero()));
 
-    describe("#xp", () => {
+    describe("#xpSystem", () => {
         it("defaults to", () => expect(sut.xp).toBe(0));
 
         it("goes up when experience is added", () => {

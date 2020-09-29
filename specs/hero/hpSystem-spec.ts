@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { Hero, AbilityType, ClassType } from "../evercraft";
+import { Hero, AbilityType, ClassType } from "../../evercraft";
 
 declare var global: any;
 

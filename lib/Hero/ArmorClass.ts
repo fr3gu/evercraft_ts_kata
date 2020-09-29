@@ -15,6 +15,10 @@ export default class ArmorClass {
         return BASE_ARMOR_CLASS + this.dexterityModifier;
     }
 
+    get dexLessValue(): number {
+        return this.dexterityModifier < 0 ? this.value : BASE_ARMOR_CLASS;
+    }
+
     private get dexterityModifier(): number {
         return this._hero.getModifierForAbility(AbilityType.Dexterity);
     }

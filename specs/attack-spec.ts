@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { Attack, Hero, AbilityType } from "../evercraft";
+import { Attack, Hero, AbilityType, ClassType } from "../evercraft";
 
 describe("Attack", () => {
     let sut: Attack, attacker: Hero, defender: Hero;
@@ -64,6 +64,43 @@ describe("Attack", () => {
             sut.resolve(20);
             
             expect(defender.currentHitPoints).toBe(previousHitPoints - attacker.critAttackDamage);
+        });
+    });
+
+    describe("when attacker is Rogue", () => {
+
+        let previousHitPoints: number, didHit: boolean;
+
+        beforeEach(() => attacker.class = ClassType.Rogue);
+
+        describe("and defender has a dexterity bonus on their armor class", () => {
+
+            beforeEach(() => defender.setAbility(AbilityType.Dexterity, 14)); // ac = 12
+
+            it("attacker ignores the dex bonus on a hit", () => {
+                didHit = sut.resolve(10);
+                expect(didHit).toBe(true);
+            });
+
+            it("attacker ignores the dex bonus on a miss", () => {
+                didHit = sut.resolve(9);
+                expect(didHit).toBe(false);
+            });
+        });
+
+        describe("and defender has a dexterity penalty on their armor class", () => {
+
+            beforeEach(() => defender.setAbility(AbilityType.Dexterity, 6)); // ac = 8
+
+            it("attacker includes the dex penalty on a hit", () => {
+                didHit = sut.resolve(8);
+                expect(didHit).toBe(true);
+            });
+
+            it("attacker includes the dex penalty on a miss", () => {
+                didHit = sut.resolve(7);
+                expect(didHit).toBe(false);
+            });
         });
     });
 });
