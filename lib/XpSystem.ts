@@ -11,11 +11,11 @@ export default class XpSystem {
         this._xp = 0;
     }
 
-    public get level(): number {
+    get level(): number {
         return Math.floor(this._hero.xp / LEVEL_XP) + 1;
     }
     
-    public get xp() : number {
+    get xp() : number {
         return this._xp;
     }
     

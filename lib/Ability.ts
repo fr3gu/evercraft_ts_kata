@@ -9,22 +9,18 @@ export default class Ability {
         this._score = score;
     }
 
-    public get score(): number {
+    get score(): number {
         return this._score;
     }
 
     
-    public set score(v : number) {
+    set score(v : number) {
         if(v < 1 || v > 20) {
             throw `Invalid score (${v})!`
         }
         this._score = v;
     }
     
-    // public get type(): AbilityType {
-    //     return this._type;
-    // }
-
     public get modifier(): number {
         return Math.floor((this._score - 10) / 2);
     }

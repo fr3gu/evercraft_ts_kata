@@ -1,8 +1,15 @@
 import Hero from "./Hero";
-import { AbilityType } from "./Enums";
-import { classFeatures } from "./Data";
+import { AbilityType, ClassType } from "./Enums";
 
 const MIN_HP = 1;
+const BASE_HITPOINTS = 5;
+const BASE_FIGHTER_HITPOINTS = 10;
+
+const HP_PER_LEVEL = new Map<ClassType, { hpPerLevel: number }>([
+    [ClassType.None, { hpPerLevel: BASE_HITPOINTS }],
+    [ClassType.Fighter, { hpPerLevel: BASE_FIGHTER_HITPOINTS }],
+    [ClassType.Rogue, { hpPerLevel: BASE_HITPOINTS }],
+]);
 
 export default class HpSystem {
     private _hero: Hero;
@@ -13,16 +20,20 @@ export default class HpSystem {
         this._damage = 0;
     }
 
-    public get maxHp(): number {
-        return Math.max(classFeatures.get(this._hero.class).hpPerLevel + this._hero.getModifierForAbility(AbilityType.Constitution), MIN_HP) * this._hero.level;
+    get maxHp(): number {
+        return Math.max(this.hpPerLevel + this._hero.getModifierForAbility(AbilityType.Constitution), MIN_HP) * this._hero.level;
     }
 
-    public get currentHp(): number {
+    get currentHp(): number {
         return this.maxHp - this._damage;
     }
 
-    public get isAlive(): boolean {
+    get isAlive(): boolean {
         return this.currentHp > 0;
+    }
+
+    private get hpPerLevel(): number {
+        return HP_PER_LEVEL.get(this._hero.class).hpPerLevel;
     }
 
     doDamage(points: number): void {
