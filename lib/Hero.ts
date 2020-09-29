@@ -1,8 +1,8 @@
 import { AbilityType, Alignment, ClassType } from "./Enums";
 import Ability from "./Ability";
+import Level from "./Level";
 import { classFeatures } from "./Data";
 
-const LEVEL_XP = 1000;
 const BASE_ARMOR_CLASS = 10;
 const BASE_ATTACK_DMG = 1;
 const MIN_HP = 1;
@@ -14,6 +14,7 @@ export default class Hero {
     private _class: ClassType;
     private _currentDamage: number;
     private _abilities: Map<AbilityType, Ability>;
+    private _level = new Level(this);
 
     name: string;
 
@@ -38,9 +39,11 @@ export default class Hero {
         return this._xp;
     }
 
-    public get level(): number {
-        return Math.floor(this._xp / LEVEL_XP) + 1;
+    
+    public get level() : number {
+        return this._level.level;
     }
+    
 
     public get alignment(): Alignment {
         return this._alignment;
