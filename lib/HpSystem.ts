@@ -4,7 +4,7 @@ import { classFeatures } from "./Data";
 
 const MIN_HP = 1;
 
-export default class HitPoints {
+export default class HpSystem {
     private _hero: Hero;
     private _damage: number;
 

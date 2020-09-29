@@ -40,7 +40,7 @@ describe("Hero", () => {
             });
     
             it("throws when rogue tries to set 'GOOD'", () => {
-                expect(() => sut.alignment = Alignment.Good).toThrow("'Rogue' cannot be 'GOOD'");
+                expect(() => sut.alignment = Alignment.Good).toThrow("'GOOD' cannot be 'Rogue'!");
             });
         });
     });

@@ -1,19 +1,30 @@
 import { AbilityType, Alignment, ClassType } from "./Enums";
 import Ability from "./Ability";
 import XpSystem from "./XpSystem";
-import HitPoints from "./HitPoints";
-import { classFeatures } from "./Data";
-
-const BASE_ARMOR_CLASS = 10;
-const BASE_ATTACK_DMG = 1;
-const MIN_ATTACK_DMG = 1;
+import HpSystem from "./HpSystem";
+import ArmorClass from "./ArmorClass";
+import AttackSystem from "./AttackSystem";
 
 export default class Hero {
+    validateClassAndAlignment(charClass: ClassType, alignment: Alignment, errMsg: string) {
+        if (alignment === Alignment.Good && charClass === ClassType.Rogue) {
+            throw errMsg;
+        }
+    }
+    private validateIsInList(list: unknown[], v: Alignment | ClassType, errMsg: string) {
+        const found = !!list.find((u: string | number) => u === v);
+
+        if (!found) {
+            throw errMsg;
+        }
+    }
     private _alignment: Alignment;
     private _class: ClassType;
     private _abilities: Map<AbilityType, Ability>;
     private _xpSystem: XpSystem;
-    private _hitPoints: HitPoints;
+    private _hp: HpSystem;
+    private _ac: ArmorClass;
+    private _attack: AttackSystem;
 
     name: string;
 
@@ -31,7 +42,9 @@ export default class Hero {
 
         this.name = "";
         this._xpSystem = new XpSystem(this);
-        this._hitPoints = new HitPoints(this);
+        this._hp = new HpSystem(this);
+        this._ac = new ArmorClass(this);
+        this._attack = new AttackSystem(this);
     }
 
     public get xp(): number {
@@ -47,16 +60,8 @@ export default class Hero {
     }
 
     public set alignment(v: Alignment) {
-        const vals = Object.values(Alignment);
-        const found = !!vals.find((u) => u === v);
-
-        if (!found) {
-            throw `Invalid alignment (${v})!`;
-        }
-
-        if (this.class === ClassType.Rogue && v === Alignment.Good) {
-            throw `'Rogue' cannot be 'GOOD'!`;
-        }
+        this.validateIsInList(Object.values(Alignment), v, `Invalid alignment (${v})!`);
+        this.validateClassAndAlignment(this.class, v, `'GOOD' cannot be 'Rogue'!`);
 
         this._alignment = v;
     }
@@ -66,52 +71,38 @@ export default class Hero {
     }
 
     public set class(v: ClassType) {
-        const vals = Object.values(ClassType);
-        const found = !!vals.find((u) => u === v);
-
-        if (!found) {
-            throw `Invalid class (${v})!`;
-        }
-
-        if (this.alignment === Alignment.Good && v === ClassType.Rogue) {
-            throw `'GOOD' cannot be 'Rogue'!`;
-        }
-
+        this.validateIsInList(Object.values(ClassType), v, `Invalid class (${v})!`);
+        this.validateClassAndAlignment(v, this.alignment, `'GOOD' cannot be 'Rogue'!`);
+        
         this._class = v;
     }
 
     public get armorClass(): number {
-        return BASE_ARMOR_CLASS + this.getModifierForAbility(AbilityType.Dexterity);
+        return this._ac.value;
     }
 
     public get hitPoints(): number {
-        return this._hitPoints.maxHp;
+        return this._hp.maxHp;
     }
 
     public get currentHitPoints(): number {
-        return this._hitPoints.currentHp;
+        return this._hp.currentHp;
     }
 
     public get isAlive(): boolean {
-        return this._hitPoints.isAlive;
+        return this._hp.isAlive;
     }
 
     public get attackModifier(): number {
-        const myClassData = classFeatures.get(this._class);
-        const attackAbilityMod = this.getModifierForAbility(myClassData.attackAbilityMod);
-
-        return attackAbilityMod + Math.floor(this.level / classFeatures.get(this._class).rollModForEveryNLevel);
+        return this._attack.attackModifier;
     }
 
     public get attackDamage(): number {
-        return Math.max(BASE_ATTACK_DMG + this.getModifierForAbility(AbilityType.Strength), MIN_ATTACK_DMG);
+        return this._attack.attackDamage;
     }
 
     public get critAttackDamage(): number {
-        const myClassData = classFeatures.get(this._class);
-        const attackAbilityMod = this.getModifierForAbility(AbilityType.Strength);
-
-        return Math.max((BASE_ATTACK_DMG + attackAbilityMod) * myClassData.critModifier, MIN_ATTACK_DMG);
+        return this._attack.critAttackDamage;
     }
 
     addXp(amount: number) {
@@ -119,7 +110,7 @@ export default class Hero {
     }
 
     doDamage(points: number): void {
-        this._hitPoints.doDamage(points);
+        this._hp.doDamage(points);
     }
 
     setAbility(abilityType: AbilityType, score: number) {
