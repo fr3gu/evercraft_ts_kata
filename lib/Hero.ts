@@ -1,25 +1,15 @@
-import { AbilityType, Alignment, ClassType } from "./Enums";
+import { AbilityType, AlignmentType as AlignmentType, ClassType } from "./Enums";
 import Ability from "./Ability";
 import XpSystem from "./XpSystem";
 import HpSystem from "./HpSystem";
 import ArmorClass from "./ArmorClass";
 import AttackSystem from "./AttackSystem";
+import Alignment from "./Alignment";
+import CharClass from "./CharClass";
 
 export default class Hero {
-    validateClassAndAlignment(charClass: ClassType, alignment: Alignment, errMsg: string) {
-        if (alignment === Alignment.Good && charClass === ClassType.Rogue) {
-            throw errMsg;
-        }
-    }
-    private validateIsInList(list: unknown[], v: Alignment | ClassType, errMsg: string) {
-        const found = !!list.find((u: string | number) => u === v);
-
-        if (!found) {
-            throw errMsg;
-        }
-    }
     private _alignment: Alignment;
-    private _class: ClassType;
+    private _class: CharClass;
     private _abilities: Map<AbilityType, Ability>;
     private _xpSystem: XpSystem;
     private _hp: HpSystem;
@@ -27,8 +17,8 @@ export default class Hero {
     private _attack: AttackSystem;
 
     constructor() {
-        this._alignment = Alignment.Neutral;
-        this._class = ClassType.None;
+        this._alignment = new Alignment(this);
+        this._class = new CharClass(this);
         this._abilities = new Map([
             [AbilityType.Strength, new Ability(AbilityType.Strength)],
             [AbilityType.Dexterity, new Ability(AbilityType.Dexterity)],
@@ -47,26 +37,20 @@ export default class Hero {
 
     name: string;
 
-    get alignment(): Alignment {
-        return this._alignment;
+    get alignment(): AlignmentType {
+        return this._alignment.value;
     }
 
-    set alignment(v: Alignment) {
-        this.validateIsInList(Object.values(Alignment), v, `Invalid alignment (${v})!`);
-        this.validateClassAndAlignment(this.class, v, `'GOOD' cannot be 'Rogue'!`);
-
-        this._alignment = v;
+    set alignment(v: AlignmentType) {
+        this._alignment.value = v;
     }
 
     get class(): ClassType {
-        return this._class;
+        return this._class.value;
     }
 
     set class(v: ClassType) {
-        this.validateIsInList(Object.values(ClassType), v, `Invalid class (${v})!`);
-        this.validateClassAndAlignment(v, this.alignment, `'GOOD' cannot be 'Rogue'!`);
-
-        this._class = v;
+        this._class.value = v;
     }
 
     get xp(): number {

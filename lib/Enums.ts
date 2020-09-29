@@ -1,5 +1,5 @@
 
-export enum Alignment {
+export enum AlignmentType {
     Neutral = "NEUTRAL",
     Good = "GOOD",
     Evil = "EVIL"

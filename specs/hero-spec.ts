@@ -3,7 +3,7 @@
  */
 
 import { Hero, AbilityType, ClassType } from "../evercraft";
-import { Alignment } from "../lib/Enums";
+import { AlignmentType } from "../lib/Enums";
 
 declare var global: any;
 
@@ -39,12 +39,12 @@ describe("Hero", () => {
             expect(sut.class).toBe(classType);
         });
 
-        it("throws on setting invalid class", () => {
-            expect(() => (sut.class = 0)).toThrowError("Invalid class (0)!");
+        it("throws on setting invalid classType", () => {
+            expect(() => (sut.class = 0)).toThrowError("Invalid classType (0)!");
         });
 
         describe("when hero is 'GOOD'", () => {
-            beforeEach(() => sut.alignment = Alignment.Good);
+            beforeEach(() => sut.alignment = AlignmentType.Good);
 
             it.each([
                 [ClassType.None, "None"],
