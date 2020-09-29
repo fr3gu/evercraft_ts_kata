@@ -5,6 +5,9 @@ const LEVEL_XP = 1000;
 const BASE_ARMOR_CLASS = 10;
 const BASE_HITPOINTS = 5;
 const BASE_ATTACK_DMG = 1;
+const MIN_HP = 1;
+const MIN_ATTACK_DMG = 1;
+const CRIT_MODIFIER = 2;
 
 export default class Hero extends AbilityEntity {
     private _xp: number;
@@ -69,7 +72,7 @@ export default class Hero extends AbilityEntity {
     }
 
     public get hitPoints(): number {
-        return Math.max(BASE_HITPOINTS + this.getModifierForAbility(AbilityType.Constitution), 1) * this.level;
+        return Math.max(BASE_HITPOINTS + this.getModifierForAbility(AbilityType.Constitution), MIN_HP) * this.level;
     }
 
     public get currentHitPoints(): number {
@@ -81,15 +84,15 @@ export default class Hero extends AbilityEntity {
     }
 
     public get attackModifier(): number {
-        return this.getModifierForAbility(AbilityType.Strength) + Math.floor(this.level / 2);
+        return this.getModifierForAbility(AbilityType.Strength) + (this._class === ClassType.Fighter ? this.level : Math.floor(this.level / 2));
     }
 
     public get attackDamage(): number {
-        return Math.max(BASE_ATTACK_DMG + this.getModifierForAbility(AbilityType.Strength), 1);
+        return Math.max(BASE_ATTACK_DMG + this.getModifierForAbility(AbilityType.Strength), MIN_ATTACK_DMG);
     }
 
     public get critAttackDamage(): number {
-        return Math.max(BASE_ATTACK_DMG * 2 + this.getModifierForAbility(AbilityType.Strength) * 2, 1);
+        return Math.max(BASE_ATTACK_DMG * CRIT_MODIFIER + this.getModifierForAbility(AbilityType.Strength) * CRIT_MODIFIER, MIN_ATTACK_DMG);
     }
 
     setXp(experience: number) {
