@@ -4,7 +4,8 @@
   "description": "The EverCraft kata",
   "scripts": {
     "test": "jest",
-    "test:watch": "jest --watchAll --runInBand"
+    "test:watch": "jest --watchAll --runInBand",
+    "test:cover": "jest --coverage --coverageDirectory='./specs/coverage' --collectCoverageFrom='./lib/**/*.ts'"
   },
   "author": "fr3gu <fr3gu77@gmail.com>",
   "license": "ISC",
