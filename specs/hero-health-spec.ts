@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { Hero, AbilityType } from "../evercraft";
+import { Hero, AbilityType, ClassType } from "../evercraft";
 
 declare var global: any;
 
@@ -13,16 +13,20 @@ describe("Hero", () => {
 
     describe("#hitPoints", () => {
         it.each([
-            ["defaults to 5", 1, 10, 5],
-            ["goes up when hero is buff", 1, 15, 7],
-            ["goes up when hero is sickly", 1, 6, 3],
-            ["cannot go below zero regardless of const", 1, 1, 1],
-            ["goes up with levels", 3, 10, 15],
-            ["goes up with levels and bufftitude", 3, 15, 21],
-            ["goes up with level even if sickly", 3, 6, 9],
-            ["cannot go below zero regardless of const", 3, 1, 3],
-        ])("%s", (_msg, lvl, con, hp) => {
+            ["defaults to 5", ClassType.None, 1, 10, 5],
+            ["goes up when hero is buff", ClassType.None, 1, 15, 7],
+            ["goes up when hero is sickly", ClassType.None, 1, 6, 3],
+            ["cannot go below zero regardless of const", ClassType.None, 1, 1, 1],
+            ["goes up with levels", ClassType.None, 3, 10, 15],
+            ["goes up with levels and bufftitude", ClassType.None, 3, 15, 21],
+            ["goes up with level even if sickly", ClassType.None, 3, 6, 9],
+            ["cannot go below zero regardless of const", ClassType.None, 3, 1, 3],
+            ["defaults to 10 for fighter", ClassType.Fighter, 1, 10, 10],
+            ["goes up by 10 with levels for Fighter", ClassType.Fighter, 3, 10, 30],
+            ["goes up more for buff, high-level Fighter", ClassType.Fighter, 3, 14, 36],
+        ])("%s", (_msg, charClass, lvl, con, hp) => {
             global.makeLevel(sut, lvl);
+            sut.class = charClass;
             sut.setAbility(AbilityType.Constitution, con);
             expect(sut.hitPoints).toBe(hp);
         });

@@ -1,29 +1,36 @@
 import { AbilityType, Alignment, ClassType } from "./Enums";
-import AbilityEntity from "./AbilityEntity";
+import Ability from "./Ability";
+import { classFeatures } from "./Data";
 
 const LEVEL_XP = 1000;
 const BASE_ARMOR_CLASS = 10;
-const BASE_HITPOINTS = 5;
 const BASE_ATTACK_DMG = 1;
 const MIN_HP = 1;
 const MIN_ATTACK_DMG = 1;
-const CRIT_MODIFIER = 2;
 
-export default class Hero extends AbilityEntity {
+export default class Hero {
     private _xp: number;
     private _alignment: Alignment;
     private _class: ClassType;
     private _currentDamage: number;
-    
+    private _abilities: Map<AbilityType, Ability>;
+
     name: string;
-    
+
     constructor() {
-        super();
         this._xp = 0;
         this._alignment = Alignment.Neutral;
         this._class = ClassType.None;
         this._currentDamage = 0;
-        
+        this._abilities = new Map([
+            [AbilityType.Strength, new Ability(AbilityType.Strength)],
+            [AbilityType.Dexterity, new Ability(AbilityType.Dexterity)],
+            [AbilityType.Constitution, new Ability(AbilityType.Constitution)],
+            [AbilityType.Wisdom, new Ability(AbilityType.Wisdom)],
+            [AbilityType.Intelligence, new Ability(AbilityType.Intelligence)],
+            [AbilityType.Charisma, new Ability(AbilityType.Charisma)],
+        ]);
+
         this.name = "";
     }
 
@@ -42,37 +49,43 @@ export default class Hero extends AbilityEntity {
     public set alignment(v: Alignment) {
         const vals = Object.values(Alignment);
         const found = !!vals.find((u) => u === v);
+
         if (!found) {
-            throw `Invalid value (${v})!`;
+            throw `Invalid alignment (${v})!`;
+        }
+
+        if (this.class === ClassType.Rogue && v === Alignment.Good) {
+            throw `'Rogue' cannot be 'GOOD'!`;
         }
 
         this._alignment = v;
     }
 
-    
-    public get class() : ClassType {
+    public get class(): ClassType {
         return this._class;
     }
 
-    
-    public set class(v : ClassType) {
+    public set class(v: ClassType) {
         const vals = Object.values(ClassType);
         const found = !!vals.find((u) => u === v);
+
         if (!found) {
             throw `Invalid class (${v})!`;
         }
 
+        if (this.alignment === Alignment.Good && v === ClassType.Rogue) {
+            throw `'GOOD' cannot be 'Rogue'!`;
+        }
+
         this._class = v;
     }
-    
-    
 
     public get armorClass(): number {
         return BASE_ARMOR_CLASS + this.getModifierForAbility(AbilityType.Dexterity);
     }
 
     public get hitPoints(): number {
-        return Math.max(BASE_HITPOINTS + this.getModifierForAbility(AbilityType.Constitution), MIN_HP) * this.level;
+        return Math.max(classFeatures.get(this._class).hpPerLevel + this.getModifierForAbility(AbilityType.Constitution), MIN_HP) * this.level;
     }
 
     public get currentHitPoints(): number {
@@ -84,7 +97,10 @@ export default class Hero extends AbilityEntity {
     }
 
     public get attackModifier(): number {
-        return this.getModifierForAbility(AbilityType.Strength) + (this._class === ClassType.Fighter ? this.level : Math.floor(this.level / 2));
+        const myClassData = classFeatures.get(this._class);
+        const attackAbilityMod = this.getModifierForAbility(myClassData.attackAbilityMod);
+
+        return attackAbilityMod + Math.floor(this.level / classFeatures.get(this._class).rollModForEveryNLevel);
     }
 
     public get attackDamage(): number {
@@ -92,7 +108,10 @@ export default class Hero extends AbilityEntity {
     }
 
     public get critAttackDamage(): number {
-        return Math.max(BASE_ATTACK_DMG * CRIT_MODIFIER + this.getModifierForAbility(AbilityType.Strength) * CRIT_MODIFIER, MIN_ATTACK_DMG);
+        const myClassData = classFeatures.get(this._class);
+        const attackAbilityMod = this.getModifierForAbility(AbilityType.Strength);
+
+        return Math.max((BASE_ATTACK_DMG + attackAbilityMod) * myClassData.critModifier, MIN_ATTACK_DMG);
     }
 
     setXp(experience: number) {
@@ -105,5 +124,15 @@ export default class Hero extends AbilityEntity {
 
     doDamage(points: number): void {
         this._currentDamage += points;
+    }
+
+    setAbility(abilityType: AbilityType, score: number) {
+        const theAbility = this._abilities.get(abilityType);
+        theAbility.score = score;
+        this._abilities.set(abilityType, theAbility);
+    }
+
+    getModifierForAbility(abilityType: AbilityType): number {
+        return this._abilities.get(abilityType).modifier;
     }
 }
