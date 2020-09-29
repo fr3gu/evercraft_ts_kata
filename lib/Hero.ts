@@ -1,11 +1,11 @@
 import { AbilityType, AlignmentType, ClassType } from "./Enums";
-import Ability from "./Ability";
-import XpSystem from "./XpSystem";
-import HpSystem from "./HpSystem";
-import ArmorClass from "./ArmorClass";
-import AttackSystem from "./AttackSystem";
-import Alignment from "./Alignment";
-import CharClass from "./CharClass";
+import Ability from "./Hero/Ability";
+import XpSystem from "./Hero/XpSystem";
+import HpSystem from "./Hero/HpSystem";
+import ArmorClass from "./Hero/ArmorClass";
+import AttackSystem from "./Hero/AttackSystem";
+import Alignment from "./Hero/Alignment";
+import CharClass from "./Hero/CharClass";
 
 export default class Hero {
     private _alignment: Alignment;

@@ -1,5 +1,5 @@
-import Hero from "./Hero";
-import { AbilityType, ClassType } from "./Enums";
+import Hero from "../Hero";
+import { AbilityType, ClassType } from "../Enums";
 
 const BASE_ATTACK_DMG = 1;
 const MIN_ATTACK_DMG = 1;

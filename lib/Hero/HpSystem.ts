@@ -1,5 +1,5 @@
-import Hero from "./Hero";
-import { AbilityType, ClassType } from "./Enums";
+import Hero from "../Hero";
+import { AbilityType, ClassType } from "../Enums";
 
 const MIN_HP = 1;
 const BASE_HITPOINTS = 5;

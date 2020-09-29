@@ -1,4 +1,4 @@
-import Hero from "./Hero";
+import Hero from "../Hero";
 
 const LEVEL_XP = 1000;
 

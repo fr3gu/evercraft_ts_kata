@@ -1,4 +1,4 @@
-import { AlignmentType, ClassType } from "./Enums";
+import { AlignmentType, ClassType } from "../Enums";
 
 export default class Validator {
     static validateClassAndAlignment(charClass: ClassType, alignment: AlignmentType, errMsg: string) {
