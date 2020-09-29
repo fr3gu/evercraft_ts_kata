@@ -16,9 +16,9 @@ export default class Hero {
     private _ac: ArmorClass;
     private _attack: AttackSystem;
 
+    name: string;
+
     constructor() {
-        this._alignment = new Alignment(this);
-        this._class = new CharClass(this);
         this._abilities = new Map([
             [AbilityType.Strength, new Ability(AbilityType.Strength)],
             [AbilityType.Dexterity, new Ability(AbilityType.Dexterity)],
@@ -28,14 +28,15 @@ export default class Hero {
             [AbilityType.Charisma, new Ability(AbilityType.Charisma)],
         ]);
 
-        this.name = "";
+        this._alignment = new Alignment(this);
+        this._class = new CharClass(this);
         this._xpSystem = new XpSystem(this);
         this._hp = new HpSystem(this);
         this._ac = new ArmorClass(this);
         this._attack = new AttackSystem(this);
-    }
 
-    name: string;
+        this.name = "";
+    }
 
     get alignment(): AlignmentType {
         return this._alignment.value;

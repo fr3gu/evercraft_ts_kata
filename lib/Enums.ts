@@ -1,10 +1,8 @@
-
 export enum AlignmentType {
     Neutral = "NEUTRAL",
     Good = "GOOD",
-    Evil = "EVIL"
+    Evil = "EVIL",
 }
-
 
 export enum AbilityType {
     Unknown = 0,
@@ -16,13 +14,10 @@ export enum AbilityType {
     Charisma = 6,
 }
 
-
-
-
 export enum ClassType {
     None = 1,
     Fighter = 2,
     Rogue = 3,
     Monk = 4,
-    Paladin = 5
+    Paladin = 5,
 }
