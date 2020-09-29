@@ -33,7 +33,11 @@ export default class HpSystem {
     }
 
     private get hpPerLevel(): number {
-        return HP_PER_LEVEL.get(this._hero.class).hpPerLevel;
+        return HP_PER_LEVEL.get(this.class).hpPerLevel;
+    }
+
+    private get class(): ClassType {
+        return this._hero.class
     }
 
     doDamage(points: number): void {

@@ -1,4 +1,4 @@
-import { AbilityType, AlignmentType as AlignmentType, ClassType } from "./Enums";
+import { AbilityType, AlignmentType, ClassType } from "./Enums";
 import Ability from "./Ability";
 import XpSystem from "./XpSystem";
 import HpSystem from "./HpSystem";
@@ -94,11 +94,11 @@ export default class Hero {
 
     doDamage = (points: number): void => this._hp.doDamage(points);
 
-    setAbility(abilityType: AbilityType, score: number) {
+    getModifierForAbility = (abilityType: AbilityType): number => this._abilities.get(abilityType).modifier;
+
+    setAbility = (abilityType: AbilityType, score: number) => {
         const theAbility = this._abilities.get(abilityType);
         theAbility.score = score;
         this._abilities.set(abilityType, theAbility);
-    }
-
-    getModifierForAbility = (abilityType: AbilityType): number => this._abilities.get(abilityType).modifier;
+    };
 }

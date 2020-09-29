@@ -8,8 +8,6 @@ export default class Validator {
         if (alignment === AlignmentType.Good && charClass === ClassType.Rogue) {
             throw errMsg;
         }
-
-        return
     }
     
     private static validateIsInList(list: unknown[], v: AlignmentType | ClassType, errMsg: string) {

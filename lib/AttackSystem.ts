@@ -32,11 +32,11 @@ export default class AttackSystem {
     }
 
     private get attackProgression(): number {
-        return classFeatures.get(this._hero.class).attackProgression
+        return classFeatures.get(this.class).attackProgression
     }
 
     private get attackAbility(): AbilityType {
-        return classFeatures.get(this._hero.class).attackAbilityMod;
+        return classFeatures.get(this.class).attackAbilityMod;
     }
 
     private get abiltiyModifier(): number {
@@ -48,6 +48,10 @@ export default class AttackSystem {
     }
 
     private get critMultiplier(): number {
-        return classFeatures.get(this._hero.class).critMultiplier;
+        return classFeatures.get(this.class).critMultiplier;
+    }
+
+    private get class(): ClassType {
+        return this._hero.class
     }
 }

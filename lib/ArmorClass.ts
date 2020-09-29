@@ -12,7 +12,11 @@ export default class ArmorClass {
 
     
     get value() : number {
-        return BASE_ARMOR_CLASS + this._hero.getModifierForAbility(AbilityType.Dexterity);
+        return BASE_ARMOR_CLASS + this.dexterityModifier;
+    }
+
+    private get dexterityModifier(): number {
+        return this._hero.getModifierForAbility(AbilityType.Dexterity);
     }
     
 }
