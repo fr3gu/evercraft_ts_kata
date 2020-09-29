@@ -1,4 +1,4 @@
-import { AbilityType } from "../Enums";
+import { AbilityType, ClassType } from "../Enums";
 import Hero from "../Hero";
 
 const BASE_ARMOR_CLASS = 10;
@@ -12,6 +12,10 @@ export default class ArmorClass {
 
     
     get value() : number {
+        if (this._hero.class === ClassType.Monk) {
+            return BASE_ARMOR_CLASS + this.dexterityModifier + Math.max(this.wisdomModifier, 0);
+        }
+
         return BASE_ARMOR_CLASS + this.dexterityModifier;
     }
 
@@ -22,5 +26,8 @@ export default class ArmorClass {
     private get dexterityModifier(): number {
         return this._hero.getModifierForAbility(AbilityType.Dexterity);
     }
-    
+
+    private get wisdomModifier(): number {
+        return this._hero.getModifierForAbility(AbilityType.Wisdom);
+    }
 }

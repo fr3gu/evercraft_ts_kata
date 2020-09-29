@@ -3,12 +3,13 @@ import { AbilityType, ClassType } from "../Enums";
 
 const MIN_HP = 1;
 const BASE_HITPOINTS = 5;
-const BASE_FIGHTER_HITPOINTS = 10;
 
 const HP_PER_LEVEL = new Map<ClassType, { hpPerLevel: number }>([
     [ClassType.None, { hpPerLevel: BASE_HITPOINTS }],
-    [ClassType.Fighter, { hpPerLevel: BASE_FIGHTER_HITPOINTS }],
+    [ClassType.Fighter, { hpPerLevel: 10 }],
     [ClassType.Rogue, { hpPerLevel: BASE_HITPOINTS }],
+    [ClassType.Monk, { hpPerLevel: 6 }],
+    [ClassType.Paladin, { hpPerLevel: BASE_HITPOINTS }]
 ]);
 
 export default class HpSystem {
