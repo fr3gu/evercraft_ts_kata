@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { Hero, AbilityType, ClassType  } from "../evercraft";
+import { Hero, AbilityType, ClassType } from "../evercraft";
 
 declare var global: any;
 
@@ -32,7 +32,7 @@ describe("Hero", () => {
             [ClassType.Fighter, "Fighter"],
             [ClassType.Rogue, "Rogue"],
             [ClassType.Monk, "Monk"],
-            [ClassType.Paladin, "Paladin"]
+            [ClassType.Paladin, "Paladin"],
         ])("can be set to %s (%s)", (classType, _expected) => {
             sut.class = classType;
             expect(sut.class).toBe(classType);

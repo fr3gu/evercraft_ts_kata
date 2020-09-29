@@ -3,7 +3,7 @@ import Ability from "./Ability";
 
 
 export default class AbilityEntity {
-    private _abilities: Map<AbilityType, Ability>;
+    protected _abilities: Map<AbilityType, Ability>;
 
     constructor() {
         this._abilities = new Map([

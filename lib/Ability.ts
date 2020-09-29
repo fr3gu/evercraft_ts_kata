@@ -21,9 +21,9 @@ export default class Ability {
         this._score = v;
     }
     
-    public get type(): AbilityType {
-        return this._type;
-    }
+    // public get type(): AbilityType {
+    //     return this._type;
+    // }
 
     public get modifier(): number {
         return Math.floor((this._score - 10) / 2);
