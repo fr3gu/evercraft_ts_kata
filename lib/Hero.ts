@@ -26,8 +26,6 @@ export default class Hero {
     private _ac: ArmorClass;
     private _attack: AttackSystem;
 
-    name: string;
-
     constructor() {
         this._alignment = Alignment.Neutral;
         this._class = ClassType.None;
@@ -47,13 +45,7 @@ export default class Hero {
         this._attack = new AttackSystem(this);
     }
 
-    get xp(): number {
-        return this._xpSystem.xp;
-    }
-
-    get level(): number {
-        return this._xpSystem.level;
-    }
+    name: string;
 
     get alignment(): Alignment {
         return this._alignment;
@@ -73,8 +65,16 @@ export default class Hero {
     set class(v: ClassType) {
         this.validateIsInList(Object.values(ClassType), v, `Invalid class (${v})!`);
         this.validateClassAndAlignment(v, this.alignment, `'GOOD' cannot be 'Rogue'!`);
-        
+
         this._class = v;
+    }
+
+    get xp(): number {
+        return this._xpSystem.xp;
+    }
+
+    get level(): number {
+        return this._xpSystem.level;
     }
 
     get armorClass(): number {
