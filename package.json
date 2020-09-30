@@ -1,20 +1,25 @@
 {
-  "name": "evercraft",
-  "version": "1.0.0",
-  "description": "The EverCraft kata",
-  "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watchAll --runInBand"
-  },
-  "author": "fr3gu <fr3gu77@gmail.com>",
-  "license": "ISC",
-  "private": true,
-  "devDependencies": {
-    "jest": "^26.4.2",
-    "ts-jest": "^26.4.0",
-    "typescript": "^4.0.3"
-  },
-  "dependencies": {
-    "@types/jest": "^26.0.14"
-  }
+    "name": "evercraft",
+    "version": "1.0.0",
+    "description": "The EverCraft kata",
+    "scripts": {
+        "test": "jest --runInBand",
+        "test:watch": "jest --watchAll",
+        "test:cover": "jest --coverage --coverageDirectory='./.coverage' --collectCoverageFrom='./lib/**/*.ts'",
+        "lint": "eslint . --ext .ts"
+    },
+    "author": "fr3gu <fr3gu77@gmail.com>",
+    "license": "ISC",
+    "private": true,
+    "devDependencies": {
+        "@types/jest": "^26.0.14",
+        "@typescript-eslint/eslint-plugin": "^4.3.0",
+        "@typescript-eslint/parser": "^4.3.0",
+        "eslint": "^7.10.0",
+        "eslint-config-airbnb-base": "^14.2.0",
+        "eslint-plugin-import": "^2.22.1",
+        "jest": "^26.4.2",
+        "ts-jest": "^26.4.0",
+        "typescript": "^4.0.3"
+    }
 }

@@ -5,7 +5,9 @@
 import { Attack, Hero, AbilityType } from "../evercraft";
 
 describe("Attack", () => {
-    let sut: Attack, attacker: Hero, defender: Hero;
+    let sut: Attack;
+    let attacker: Hero;
+    let defender: Hero;
 
     beforeEach(() => {
         attacker = new Hero();
@@ -19,7 +21,8 @@ describe("Attack", () => {
         ["when a roll beats armor class", 11, true, 1],
         ["when a roll is a natural 20", 20, true, 2],
     ])("%s", (_msg, roll, hits, points) => {
-        let previousHitPoints: number, didHit: boolean;
+        let previousHitPoints: number;
+        let didHit: boolean;
 
         beforeEach(() => {
             previousHitPoints = defender.currentHitPoints;
@@ -36,8 +39,9 @@ describe("Attack", () => {
     });
 
     describe("when attacker is beefy", () => {
-        let previousHitPoints: number, didHit: boolean;
-        
+        let previousHitPoints: number;
+        let didHit: boolean;
+
         beforeEach(() => attacker.setAbility(AbilityType.Strength, 14));
 
         it("hits more easily", () => {
@@ -55,15 +59,15 @@ describe("Attack", () => {
         it("does more damage", () => {
             previousHitPoints = defender.currentHitPoints;
             sut.resolve(8);
-            
-            expect(defender.currentHitPoints).toBe(previousHitPoints - attacker.attackDamage);
+
+            expect(defender.currentHitPoints).toBe(previousHitPoints - attacker.getAttackDamage(defender));
         });
 
         it("does even more damage", () => {
             previousHitPoints = defender.currentHitPoints;
             sut.resolve(20);
-            
-            expect(defender.currentHitPoints).toBe(previousHitPoints - attacker.critAttackDamage);
+
+            expect(defender.currentHitPoints).toBe(previousHitPoints - attacker.getCritAttackDamage(defender));
         });
     });
 });
