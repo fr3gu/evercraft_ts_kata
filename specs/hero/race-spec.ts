@@ -2,7 +2,10 @@
  * @jest-environment node
  */
 
-import { Hero, AlignmentType, ClassType, RaceType } from "../../evercraft";
+import { Hero, RaceType } from "../../evercraft";
+import { ISpecHelperGlobal } from "../Declarations";
+
+declare const global: ISpecHelperGlobal;
 
 describe("Hero", () => {
     let sut: Hero;
@@ -29,7 +32,7 @@ describe("Hero", () => {
             // [RaceType.Elf, "Elf"],
             // [RaceType.Halfling, "Halfling"],
         ])("can be set to %s (%s)", (race) => {
-            sut.race = race;
+            global.makeRace(sut, race);
             expect(sut.race).toBe(race);
         });
     });

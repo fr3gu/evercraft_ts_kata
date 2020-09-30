@@ -1,4 +1,4 @@
-import { AbilityType, ClassType } from "../Enums";
+import { AbilityType, ClassType, RaceType } from "../Enums";
 import Hero from "../Hero";
 
 const BASE_ARMOR_CLASS = 10;
@@ -12,6 +12,7 @@ export default class ArmorClass {
 
     getValue(attacker: Hero): number {
         let total = BASE_ARMOR_CLASS;
+
         if (attacker.class === ClassType.Rogue) {
             total += this.negativeDex;
         } else {
@@ -20,6 +21,10 @@ export default class ArmorClass {
 
         if (this._hero.class === ClassType.Monk) {
             total += this.positiveWis;
+        }
+
+        if (this._hero.race === RaceType.Orc) {
+            total += 2;
         }
 
         return total;

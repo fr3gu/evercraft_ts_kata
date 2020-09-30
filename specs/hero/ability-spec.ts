@@ -2,8 +2,10 @@
  * @jest-environment node
  */
 
-import { Hero, AlignmentType, ClassType, RaceType } from "../../evercraft";
-import { AbilityType } from "../../lib/Enums";
+import { Hero, AbilityType, RaceType } from "../../evercraft";
+import { ISpecHelperGlobal } from "../Declarations";
+
+declare const global: ISpecHelperGlobal;
 
 interface IAbilityTestData {
     race: RaceType;
@@ -26,7 +28,7 @@ describe("Hero", () => {
         }
 
         beforeEach(() => {
-            sut.race = RaceType.Orc;
+            global.makeRace(sut, RaceType.Orc);
         });
 
         const defaults = { race: RaceType.Orc, ability: AbilityType.Unknown, score: 10, expected: 0 };

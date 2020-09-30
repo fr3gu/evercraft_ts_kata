@@ -2,8 +2,10 @@
  * @jest-environment node
  */
 
-import { Ability, RaceType } from "../evercraft";
-import Hero from "../lib/Hero";
+import { Ability, Hero, RaceType } from "../evercraft";
+import { ISpecHelperGlobal } from "./Declarations";
+
+declare const global: ISpecHelperGlobal;
 
 describe("Ability", () => {
     let sut: Ability;
@@ -68,8 +70,8 @@ describe("Ability", () => {
             [RaceType.Orc, "Orc"],
             //[RaceType.Dwarf, "Dwarf"]
         ])("can get modifiers for race", (race) => {
+            global.makeRace(hero, race);
 
-            hero.race = race;
             expect(sut.modifier).toBeDefined();
         });
     });
