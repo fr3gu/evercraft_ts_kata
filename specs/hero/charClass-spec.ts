@@ -19,7 +19,6 @@ describe("Hero", () => {
             [ClassType.Fighter, "Fighter"],
             [ClassType.Monk, "Monk"],
             [ClassType.Rogue, "Rogue"],
-            [ClassType.Paladin, "Paladin"],
         ])("can be set to %s (%s)", (classType, _expected) => {
             sut.class = classType;
             expect(sut.class).toBe(classType);
@@ -43,7 +42,43 @@ describe("Hero", () => {
             });
 
             it("throws on setting class to Rogue", () => {
-                expect(() => (sut.class = ClassType.Rogue)).toThrowError("'GOOD' cannot be 'Rogue'");
+                expect(() => (sut.class = ClassType.Rogue)).toThrowError("'Rogue' cannot be 'GOOD'");
+            });
+        });
+
+        describe("when hero is 'NEUTRAL'", () => {
+            beforeEach(() => sut.alignment = AlignmentType.Neutral);
+
+            it.each([
+                [ClassType.None, "None"],
+                [ClassType.Fighter, "Fighter"],
+                [ClassType.Monk, "Monk"],
+                [ClassType.Rogue, "Rogue"],
+            ])("can be set to %s (%s)", (classType, _expected) => {
+                sut.class = classType;
+                expect(sut.class).toBe(classType);
+            });
+
+            it("throws on setting class to Paladin", () => {
+                expect(() => (sut.class = ClassType.Paladin)).toThrowError("'Paladin' cannot be 'NEUTRAL'");
+            });
+        });
+
+        describe("when hero is 'EVIL'", () => {
+            beforeEach(() => sut.alignment = AlignmentType.Evil);
+
+            it.each([
+                [ClassType.None, "None"],
+                [ClassType.Fighter, "Fighter"],
+                [ClassType.Monk, "Monk"],
+                [ClassType.Rogue, "Rogue"],
+            ])("can be set to %s (%s)", (classType, _expected) => {
+                sut.class = classType;
+                expect(sut.class).toBe(classType);
+            });
+
+            it("throws on setting class to Paladin", () => {
+                expect(() => (sut.class = ClassType.Paladin)).toThrowError("'Paladin' cannot be 'EVIL'");
             });
         });
     });

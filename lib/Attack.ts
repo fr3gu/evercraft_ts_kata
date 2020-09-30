@@ -1,4 +1,3 @@
-import { AbilityType, ClassType } from "./Enums";
 import Hero from "./Hero";
 
 const XP_PER_ATTACK = 10;
@@ -24,24 +23,19 @@ export default class Attack {
         return isHit;
     }
 
-    private isCriticalHit(roll: number) {
+    private isCriticalHit(roll: number): boolean {
         return this.isHit(roll) && roll === CRITICAL_ROLL;
     }
 
-    private isHit(roll: number) {
+    private isHit(roll: number): boolean {
         return roll + this._attacker.attackModifier >= this.getDefenderArmorClass();
     }
 
-    private getDefenderArmorClass() {
-        switch (this._attacker.class) {
-            case ClassType.Rogue:
-                return this._defender.dexLessArmorClass;
-            default:
-                return this._defender.armorClass;
-        }
+    private getDefenderArmorClass(): number {
+        return this._defender.getArmorClass(this._attacker);
     }
 
-    private applyDamage(isHit: boolean, isCrit: boolean) {
+    private applyDamage(isHit: boolean, isCrit: boolean): void {
         if (isCrit) {
             this._defender.doDamage(this._attacker.critAttackDamage);
         } else if (isHit) {
@@ -49,7 +43,7 @@ export default class Attack {
         }
     }
 
-    private applyExperience() {
+    private applyExperience(): void {
         this._attacker.addXp(XP_PER_ATTACK);
     }
 }

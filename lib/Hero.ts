@@ -50,10 +50,6 @@ export default class Hero {
 
     get level(): number { return this._xpSystem.level; }
 
-    get armorClass(): number { return this._ac.value; }
-    
-    get dexLessArmorClass(): number { return this._ac.dexLessValue; }
-
     get hitPoints(): number { return this._hp.maxHp; }
 
     get currentHitPoints(): number { return this._hp.currentHp; }
@@ -69,6 +65,8 @@ export default class Hero {
     addXp = (amount: number): void => this._xpSystem.addXp(amount);
 
     doDamage = (points: number): void => this._hp.doDamage(points);
+
+    getArmorClass = (attacker: Hero): number => this._ac.getValue(attacker);
 
     getModifierForAbility = (abilityType: AbilityType): number => this._abilities.get(abilityType).modifier;
 

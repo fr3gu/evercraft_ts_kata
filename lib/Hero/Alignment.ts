@@ -16,7 +16,7 @@ export default class Alignment {
     }
 
     public set value(v: AlignmentType) {
-        Validator.validateClassAndAlignment(this.class, v, `'GOOD' cannot be 'Rogue'!`);
+        Validator.validateClassAndAlignment(this.class, v);
 
         this._alignment = v;
     }

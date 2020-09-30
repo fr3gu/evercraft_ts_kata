@@ -2,9 +2,10 @@
  * @jest-environment node
  */
 
-import { AbilityType, ClassType, Hero } from "../../evercraft";
+import { AbilityType, AlignmentType, ClassType, Hero } from "../../evercraft";
+import { ISpecHelperGlobal } from "../Declarations";
 
-declare var global: any;
+declare var global: ISpecHelperGlobal;
 
 describe("Hero", () => {
     let sut: Hero;
@@ -45,12 +46,13 @@ describe("Hero", () => {
                 ["goes up on strong, high-level Monk", { ...defaults, class: ClassType.Monk, lvl: 10, str: 14, expected: 8 }],
                 ["defaults to 1 for Paladin", { ...defaults, class: ClassType.Paladin, expected: 1 }],
                 ["goes up on every level on Paladin", { ...defaults, class: ClassType.Paladin, lvl: 3, expected: +3 }],
+                ["goes up on strong, high-level Paladin", { ...defaults, class: ClassType.Paladin, lvl: 4, str: 14, expected: +6 }],
             ])("%s", (_msg, data: IAttackModifierTestDefaults) => {
                 const { class: charClass, lvl, str, dex, expected } = data;
                 
                 global.makeLevel(sut, lvl);
-                
-                sut.class = charClass;
+                global.makeClass(sut, charClass);
+
                 sut.setAbility(AbilityType.Strength, str);
                 sut.setAbility(AbilityType.Dexterity, dex);
     

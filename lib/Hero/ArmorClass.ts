@@ -10,24 +10,35 @@ export default class ArmorClass {
         this._hero = hero;
     }
 
-    
-    get value() : number {
+    getValue(attacker: Hero): number {
+        let total = BASE_ARMOR_CLASS;
+        if (attacker.class === ClassType.Rogue) {
+            total += this.negativeDex;
+        } else {
+            total += this.dexterityModifier;
+        }
+        
         if (this._hero.class === ClassType.Monk) {
-            return BASE_ARMOR_CLASS + this.dexterityModifier + Math.max(this.wisdomModifier, 0);
+            total += this.positiveWis;
         }
 
-        return BASE_ARMOR_CLASS + this.dexterityModifier;
-    }
-
-    get dexLessValue(): number {
-        return this.dexterityModifier < 0 ? this.value : BASE_ARMOR_CLASS;
+        return total;
     }
 
     private get dexterityModifier(): number {
         return this._hero.getModifierForAbility(AbilityType.Dexterity);
     }
-
+    
     private get wisdomModifier(): number {
         return this._hero.getModifierForAbility(AbilityType.Wisdom);
     }
+
+    private get negativeDex(): number {
+        return Math.min(this.dexterityModifier, 0);
+    }
+    
+    private get positiveWis(): number {
+        return Math.max(this.wisdomModifier, 0);
+    }
+
 }

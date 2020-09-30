@@ -16,7 +16,7 @@ export default class CharClass {
     }
 
     public set value(v: ClassType) {
-        Validator.validateClassAndAlignment(v, this._hero.alignment, `'GOOD' cannot be 'Rogue'!`);
+        Validator.validateClassAndAlignment(v, this._hero.alignment);
 
         this._class = v;
     }
