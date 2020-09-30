@@ -62,17 +62,11 @@ export default class Hero {
 
     getArmorClass = (attacker: Hero): number => this._ac.getValue(attacker);
 
-    getAttackModifier = (defender: Hero): number => {
-        return this._attack.getAttackModifier(defender);
-    }
+    getAttackModifier = (defender: Hero): number => this._attack.getAttackModifier(defender);
 
-    getAttackDamage = (defender: Hero): number => {
-        return this._attack.getAttackDamage(defender);
-    }
+    getAttackDamage = (defender: Hero): number => this._attack.getAttackDamage(defender);
 
-    getCritAttackDamage = (defender: Hero): number => {
-        return this._attack.getCriticalDamage(defender);
-    }
+    getCritAttackDamage = (defender: Hero): number => this._attack.getCriticalDamage(defender);
 
     getModifierForAbility = (abilityType: AbilityType): number => this._abilities.get(abilityType).modifier;
 

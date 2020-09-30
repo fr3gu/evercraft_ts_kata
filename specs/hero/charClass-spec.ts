@@ -3,9 +3,6 @@
  */
 
 import { Hero, AlignmentType, ClassType } from "../../evercraft";
-import { ISpecHelperGlobal } from "../Declarations";
-
-declare const global: ISpecHelperGlobal;
 
 describe("Hero", () => {
     let sut: Hero;
@@ -17,17 +14,6 @@ describe("Hero", () => {
     describe("#class", () => {
         it("defaults to None", () => {
             expect(sut.class).toBe(ClassType.None);
-        });
-
-        it.each([
-            [ClassType.None, "None"],
-            [ClassType.Fighter, "Fighter"],
-            [ClassType.Monk, "Monk"],
-            [ClassType.Rogue, "Rogue"],
-            [ClassType.Paladin, "Paladin"],
-        ])("can be set to %s (%s)", (classType) => {
-            global.makeClass(sut, classType);
-            expect(sut.class).toBe(classType);
         });
 
         it("throws on setting invalid classType", () => {

@@ -6,13 +6,26 @@ const MIN_ATTACK_DMG = 1;
 const CRIT_MODIFIER = 2;
 const ATTACK_PROGRESSION = 1 / 2;
 
-const classFeatures = new Map<ClassType, { baseDamage: number; attackProgression: number; attackAbilityMod: AbilityType; critMultiplier: number }>([
-    [ClassType.None, { baseDamage: BASE_ATTACK_DMG, attackProgression: ATTACK_PROGRESSION, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
-    [ClassType.Fighter, { baseDamage: BASE_ATTACK_DMG, attackProgression: 1, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
-    [ClassType.Rogue, { baseDamage: BASE_ATTACK_DMG, attackProgression: ATTACK_PROGRESSION, attackAbilityMod: AbilityType.Dexterity, critMultiplier: 3 }],
-    [ClassType.Monk, { baseDamage: 3, attackProgression: 2 / 3, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
-    [ClassType.Paladin, { baseDamage: 1, attackProgression: 1, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
+interface IClassFeatures {
+    baseDamage: number;
+    attackProgression: number;
+    attackAbilityMod: AbilityType;
+    critMultiplier: number;
+}
+
+const defaults: IClassFeatures = { baseDamage: BASE_ATTACK_DMG, attackProgression: ATTACK_PROGRESSION, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER };
+
+const classFeatures = new Map<ClassType, IClassFeatures>([
+    [ClassType.None, { ...defaults }],
+    [ClassType.Fighter, { ...defaults, attackProgression: 1 }],
+    [ClassType.Rogue, { ...defaults, attackAbilityMod: AbilityType.Dexterity, critMultiplier: 3 }],
+    [ClassType.Monk, { ...defaults, baseDamage: 3, attackProgression: 2 / 3 }],
+    [ClassType.Paladin, { ...defaults, attackProgression: 1 }],
 ]);
+
+function isAlignedWith(hero: Hero, alignment: AlignmentType) {
+    return hero.alignment === alignment;
+}
 
 export default class AttackSystem {
     private _hero: Hero;
@@ -55,7 +68,8 @@ export default class AttackSystem {
 
     getAttackModifier(defender: Hero): number {
         const result = Math.floor(this.attackProgression * this.level) + this.abiltiyModifier;
-        if (this.isAlignedWith(defender, AlignmentType.Evil) && this.isClass(ClassType.Paladin)) {
+
+        if (isAlignedWith(defender, AlignmentType.Evil) && this.isClass(ClassType.Paladin)) {
             return result + 2;
         }
         return result;
@@ -73,13 +87,10 @@ export default class AttackSystem {
         return this.class === classType;
     }
 
-    private isAlignedWith(hero: Hero, alignment: AlignmentType) {
-        return hero.alignment === alignment;
-    }
-
     private getTotalAttackDamage(defender: Hero) {
         const result = this.baseDamage + this.strengthModifier;
-        if (this.isAlignedWith(defender, AlignmentType.Evil) && this.isClass(ClassType.Paladin)) {
+
+        if (isAlignedWith(defender, AlignmentType.Evil) && this.isClass(ClassType.Paladin)) {
             return result + 2;
         }
         return result;
@@ -87,7 +98,8 @@ export default class AttackSystem {
 
     private getTotalCritDamage(defender: Hero) {
         const result = this.getTotalAttackDamage(defender);
-        if (this.isAlignedWith(defender, AlignmentType.Evil) && this.isClass(ClassType.Paladin)) {
+
+        if (isAlignedWith(defender, AlignmentType.Evil) && this.isClass(ClassType.Paladin)) {
             return result * 3;
         }
         return result * this.critMultiplier;

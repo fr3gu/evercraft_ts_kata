@@ -8,6 +8,15 @@ import { ISpecHelperGlobal } from "../Declarations";
 
 declare const global: ISpecHelperGlobal;
 
+interface IAttackModifierTestData {
+    class: ClassType;
+    lvl: number;
+    str: number;
+    dex: number;
+    oppAlign: AlignmentType;
+    expected: number;
+}
+
 interface IAttackDamageTestData {
     classType: ClassType;
     str: number;
@@ -24,13 +33,19 @@ describe("Hero", () => {
 
     describe("#attackSystem", () => {
         describe("#attackModifier", () => {
-            interface IAttackModifierTestData {
-                class: ClassType;
-                lvl: number;
-                str: number;
-                dex: number;
-                oppAlign: AlignmentType;
-                expected: number;
+            function validateAttackModifier(data: IAttackModifierTestData) {
+                const { class: charClass, lvl, str, dex, oppAlign, expected } = data;
+
+                const defender = new Hero();
+                defender.alignment = oppAlign;
+
+                global.makeLevel(sut, lvl);
+                global.makeClass(sut, charClass);
+
+                sut.setAbility(AbilityType.Strength, str);
+                sut.setAbility(AbilityType.Dexterity, dex);
+
+                expect(sut.getAttackModifier(defender)).toBe(expected);
             }
 
             describe("for classes", () => {
@@ -39,7 +54,7 @@ describe("Hero", () => {
                 it.each([
                     ["defaults to 0", { ...defaults }],
                     ["goes up when hero is beefy", { ...defaults, str: 14, expected: +2 }],
-                    ["goes down when hero is whimpy", { ...defaults, str: 6, expected: -2 }],
+                    ["goes down when hero is winpy", { ...defaults, str: 6, expected: -2 }],
                     ["goes up on even levels", { ...defaults, lvl: 2, expected: +1 }],
                     ["doesn't go up on odd levels", { ...defaults, lvl: 3, expected: +1 }],
                     ["goes up on even higher even levels", { ...defaults, lvl: 4, expected: +2 }],
@@ -90,31 +105,30 @@ describe("Hero", () => {
                     ["doesn't go up for Paladin vs 'EVIL'", { ...defaults, oppAlign: AlignmentType.Good, expected: +1 }],
                 ])("%s", (_msg, data: IAttackModifierTestData) => validateAttackModifier(data));
             });
-
-            function validateAttackModifier(data: IAttackModifierTestData) {
-                const { class: charClass, lvl, str, dex, oppAlign, expected } = data;
-
-                const defender = new Hero();
-                defender.alignment = oppAlign;
-
-                global.makeLevel(sut, lvl);
-                global.makeClass(sut, charClass);
-
-                sut.setAbility(AbilityType.Strength, str);
-                sut.setAbility(AbilityType.Dexterity, dex);
-
-                expect(sut.getAttackModifier(defender)).toBe(expected);
-            }
         });
 
         describe("#attackDamage", () => {
-            describe.each([[ClassType.None, ClassType.Fighter, ClassType.Rogue]])("for %s", (classType) => {
+            function validateAttackDamage(data: IAttackDamageTestData) {
+                const defender = new Hero();
+                defender.alignment = data.opponentAlignment;
+
+                global.makeClass(sut, data.classType);
+
+                sut.setAbility(AbilityType.Strength, data.str);
+                expect(sut.getAttackDamage(defender)).toBe(data.expected);
+            }
+
+            describe.each([
+                ["None", ClassType.None],
+                ["Fighter", ClassType.Fighter],
+                ["Rogue", ClassType.Rogue],
+            ])("for %s", (_, classType) => {
                 const defaults: IAttackDamageTestData = { classType, str: 10, opponentAlignment: AlignmentType.Neutral, expected: 0 };
 
                 it.each([
                     ["defaults to 1", { ...defaults, expected: 1 }],
                     ["goes up when hero is beefy", { ...defaults, str: 14, expected: 3 }],
-                    ["cannot go below 1", { ...defaults, str: 3, expected: 1 }],
+                    ["is at least 1 regardless of STR", { ...defaults, str: 3, expected: 1 }],
                 ])("%s", (_msg, data) => validateAttackDamage(data));
             });
 
@@ -125,7 +139,7 @@ describe("Hero", () => {
                     ["defaults to 3", { ...defaults, expected: 3 }],
                     ["goes up when Monk is beefy", { ...defaults, str: 14, expected: 5 }],
                     ["goes down when Monk is wimpy", { ...defaults, str: 6, expected: 1 }],
-                    ["cannot go below 1", { ...defaults, str: 1, expected: 1 }],
+                    ["is at least 1 regardless of STR", { ...defaults, str: 1, expected: 1 }],
                 ])("%s", (_msg, data) => validateAttackDamage(data));
             });
 
@@ -138,29 +152,32 @@ describe("Hero", () => {
                     ["goes up by +2 when opponent is 'EVIL'", { ...defaults, opponentAlignment: AlignmentType.Evil, expected: 3 }],
                     ["remains default when 'GOOD'", { ...defaults, opponentAlignment: AlignmentType.Good, expected: 1 }],
                     ["goes down when Paladin is wimpy vs 'EVIL'", { ...defaults, str: 6, opponentAlignment: AlignmentType.Evil, expected: 1 }],
-                    ["cannot go below 1", { ...defaults, str: 1, expected: 1 }],
+                    ["is at least 1 regardless of STR", { ...defaults, str: 1, expected: 1 }],
                 ])("%s", (_msg, data) => validateAttackDamage(data));
             });
+        });
 
-            function validateAttackDamage(data: IAttackDamageTestData) {
+        describe("#critAttackDamage", () => {
+            function validateCriticalDamage(data: IAttackDamageTestData) {
                 const defender = new Hero();
                 defender.alignment = data.opponentAlignment;
 
                 global.makeClass(sut, data.classType);
 
                 sut.setAbility(AbilityType.Strength, data.str);
-                expect(sut.getAttackDamage(defender)).toBe(data.expected);
+                expect(sut.getCritAttackDamage(defender)).toBe(data.expected);
             }
-        });
 
-        describe("#critAttackDamage", () => {
-            describe.each([[ClassType.None, ClassType.Fighter]])("for %s", (classType) => {
+            describe.each([
+                ["None", ClassType.None],
+                ["Fighter", ClassType.Fighter],
+            ])("for %s", (_, classType) => {
                 const defaults: IAttackDamageTestData = { classType, str: 10, opponentAlignment: AlignmentType.Neutral, expected: 0 };
 
                 it.each([
                     ["defaults to 2", { ...defaults, expected: 2 }],
                     ["goes up when hero is beefy", { ...defaults, str: 14, expected: 6 }],
-                    ["cannot go below 1", { ...defaults, str: 3, expected: 1 }],
+                    ["is at least 1 regardless of STR", { ...defaults, str: 3, expected: 1 }],
                 ])("%s", (_msg, data) => validateCriticalDamage(data));
             });
 
@@ -170,7 +187,7 @@ describe("Hero", () => {
                 it.each([
                     ["defaults to 3", { ...defaults, expected: 3 }],
                     ["goes up when Rogue is beefy", { ...defaults, str: 14, expected: 9 }],
-                    ["cannot go below 1", { ...defaults, str: 1, expected: 1 }],
+                    ["is at least 1 regardless of STR", { ...defaults, str: 1, expected: 1 }],
                 ])("%s", (_msg, data) => validateCriticalDamage(data));
             });
 
@@ -180,7 +197,8 @@ describe("Hero", () => {
                 it.each([
                     ["defaults to 6", { ...defaults, expected: 6 }],
                     ["goes up when Monk is beefy", { ...defaults, str: 14, expected: 10 }],
-                    ["cannot go below 1", { ...defaults, str: 1, expected: 1 }],
+                    ["goes up when Monk is winpy", { ...defaults, str: 6, expected: 2 }],
+                    ["is at least 1 regardless of STR", { ...defaults, str: 1, expected: 1 }],
                 ])("%s", (_msg, data) => validateCriticalDamage(data));
             });
 
@@ -191,20 +209,11 @@ describe("Hero", () => {
                     ["defaults to 2", { ...defaults, expected: 2 }],
                     ["goes up when Paladin is beefy", { ...defaults, str: 14, expected: 6 }],
                     ["goes up by +2 then x3 when opponent is 'EVIL'", { ...defaults, opponentAlignment: AlignmentType.Evil, expected: 9 }],
-                    ["goes down when Paladin is wimpy and opponent is 'EVIL'", { ...defaults, str: 6, opponentAlignment: AlignmentType.Evil, expected: 3 }],
-                    ["cannot go below 1", { ...defaults, str: 1, expected: 1 }],
+                    ["doesn't go up when opponent is 'GOOD'", { ...defaults, str: 14, opponentAlignment: AlignmentType.Good, expected: 6 }],
+                    ["goes down when Paladin is wimpy", { ...defaults, str: 6, expected: 1 }],
+                    ["is at least 1 regardless of STR", { ...defaults, str: 1, expected: 1 }],
                 ])("%s", (_msg, data) => validateCriticalDamage(data));
             });
-
-            function validateCriticalDamage(data: IAttackDamageTestData) {
-                const defender = new Hero();
-                defender.alignment = data.opponentAlignment;
-
-                global.makeClass(sut, data.classType);
-
-                sut.setAbility(AbilityType.Strength, data.str);
-                expect(sut.getCritAttackDamage(defender)).toBe(data.expected);
-            }
         });
     });
 });

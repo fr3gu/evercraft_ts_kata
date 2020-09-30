@@ -35,7 +35,7 @@ describe("Hero", () => {
             [1500, 2],
             [2000, 3],
             [5000, 6],
-        ])("has expected value", (xp, level) => {
+        ])("has expected value (%s = %s)", (xp, level) => {
             sut.addXp(xp);
             expect(sut.level).toBe(level);
         });
