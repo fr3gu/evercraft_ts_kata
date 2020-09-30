@@ -56,17 +56,23 @@ export default class Hero {
 
     get isAlive(): boolean { return this._hp.isAlive; }
 
-    get attackModifier(): number { return this._attack.attackModifier; }
-
-    get attackDamage(): number { return this._attack.attackDamage; }
-
-    get critAttackDamage(): number { return this._attack.critAttackDamage; }
-
     addXp = (amount: number): void => this._xpSystem.addXp(amount);
 
     doDamage = (points: number): void => this._hp.doDamage(points);
 
     getArmorClass = (attacker: Hero): number => this._ac.getValue(attacker);
+
+    getAttackModifier = (defender: Hero): number => {
+        return this._attack.getAttackModifier(defender);
+    }
+
+    getAttackDamage = (defender: Hero): number => {
+        return this._attack.getAttackDamage(defender);
+    }
+
+    getCritAttackDamage = (defender: Hero): number => {
+        return this._attack.getCriticalDamage(defender);
+    }
 
     getModifierForAbility = (abilityType: AbilityType): number => this._abilities.get(abilityType).modifier;
 

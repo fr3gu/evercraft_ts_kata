@@ -28,7 +28,7 @@ export default class Attack {
     }
 
     private isHit(roll: number): boolean {
-        return roll + this._attacker.attackModifier >= this.getDefenderArmorClass();
+        return roll + this._attacker.getAttackModifier(this._defender) >= this.getDefenderArmorClass();
     }
 
     private getDefenderArmorClass(): number {
@@ -37,9 +37,9 @@ export default class Attack {
 
     private applyDamage(isHit: boolean, isCrit: boolean): void {
         if (isCrit) {
-            this._defender.doDamage(this._attacker.critAttackDamage);
+            this._defender.doDamage(this._attacker.getCritAttackDamage(this._defender));
         } else if (isHit) {
-            this._defender.doDamage(this._attacker.attackDamage);
+            this._defender.doDamage(this._attacker.getAttackDamage(this._defender));
         }
     }
 

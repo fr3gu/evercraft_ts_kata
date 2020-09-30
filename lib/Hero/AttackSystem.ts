@@ -1,5 +1,5 @@
 import Hero from "../Hero";
-import { AbilityType, ClassType } from "../Enums";
+import { AbilityType, AlignmentType, ClassType } from "../Enums";
 
 const BASE_ATTACK_DMG = 1;
 const MIN_ATTACK_DMG = 1;
@@ -11,7 +11,7 @@ const classFeatures = new Map<ClassType, { baseDamage: number; attackProgression
     [ClassType.Fighter, { baseDamage: BASE_ATTACK_DMG, attackProgression: 1, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
     [ClassType.Rogue, { baseDamage: BASE_ATTACK_DMG, attackProgression: ATTACK_PROGRESSION, attackAbilityMod: AbilityType.Dexterity, critMultiplier: 3 }],
     [ClassType.Monk, { baseDamage: 3, attackProgression: 2 / 3, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
-    [ClassType.Paladin, { baseDamage: 2, attackProgression: 1, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
+    [ClassType.Paladin, { baseDamage: 1, attackProgression: 1, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
 ]);
 
 export default class AttackSystem {
@@ -19,18 +19,6 @@ export default class AttackSystem {
 
     constructor(hero: Hero) {
         this._hero = hero;
-    }
-
-    get attackModifier(): number {
-        return Math.floor(this.attackProgression * this._hero.level) + this.abiltiyModifier;
-    }
-
-    get attackDamage(): number {
-        return Math.max(this.getAttackDamage(), MIN_ATTACK_DMG);
-    }
-
-    get critAttackDamage(): number {
-        return Math.max(this.getAttackDamage() * this.critMultiplier, MIN_ATTACK_DMG);
     }
 
     private get baseDamage(): number {
@@ -61,7 +49,47 @@ export default class AttackSystem {
         return this._hero.class;
     }
 
-    private getAttackDamage() {
-        return this.baseDamage + this.strengthModifier;
+    private get level(): ClassType {
+        return this._hero.level;
+    }
+
+    getAttackModifier(defender: Hero): number {
+        const result = Math.floor(this.attackProgression * this.level) + this.abiltiyModifier;
+        if (this.isAlignedWith(defender, AlignmentType.Evil) && this.isClass(ClassType.Paladin)) {
+            return result + 2;
+        }
+        return result;
+    }
+
+    getAttackDamage(defender: Hero): number {
+        return Math.max(this.getTotalAttackDamage(defender), MIN_ATTACK_DMG);
+    }
+
+    getCriticalDamage(defender: Hero): number {
+        return Math.max(this.getTotalCritDamage(defender), MIN_ATTACK_DMG);
+    }
+
+    private isClass(classType: ClassType) {
+        return this.class === classType;
+    }
+
+    private isAlignedWith(hero: Hero, alignment: AlignmentType) {
+        return hero.alignment === alignment;
+    }
+
+    private getTotalAttackDamage(defender: Hero) {
+        const result = this.baseDamage + this.strengthModifier;
+        if (this.isAlignedWith(defender, AlignmentType.Evil) && this.isClass(ClassType.Paladin)) {
+            return result + 2;
+        }
+        return result;
+    }
+
+    private getTotalCritDamage(defender: Hero) {
+        const result = this.getTotalAttackDamage(defender);
+        if (this.isAlignedWith(defender, AlignmentType.Evil) && this.isClass(ClassType.Paladin)) {
+            return result * 3;
+        }
+        return result * this.critMultiplier;
     }
 }

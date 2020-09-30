@@ -3,9 +3,17 @@
  */
 
 import { AbilityType, ClassType, Hero } from "../../evercraft";
+import { AlignmentType } from "../../lib/Enums";
 import { ISpecHelperGlobal } from "../Declarations";
 
 declare const global: ISpecHelperGlobal;
+
+interface IAttackDamageTestData {
+    classType: ClassType;
+    str: number;
+    opponentAlignment: AlignmentType;
+    expected: number;
+}
 
 describe("Hero", () => {
     let sut: Hero;
@@ -16,40 +24,78 @@ describe("Hero", () => {
 
     describe("#attackSystem", () => {
         describe("#attackModifier", () => {
-            interface IAttackModifierTestDefaults {
+            interface IAttackModifierTestData {
                 class: ClassType;
                 lvl: number;
                 str: number;
                 dex: number;
+                oppAlign: AlignmentType;
                 expected: number;
             }
 
-            const defaults: IAttackModifierTestDefaults = { class: ClassType.None, lvl: 1, str: 10, dex: 10, expected: 0 };
+            describe("for classes", () => {
+                const defaults: IAttackModifierTestData = { class: ClassType.None, lvl: 1, str: 10, dex: 10, oppAlign: AlignmentType.Neutral, expected: 0 };
 
-            it.each([
-                ["defaults to 0", { ...defaults }],
-                ["goes up when hero is beefy", { ...defaults, str: 14, expected: +2 }],
-                ["goes down when hero is whimpy", { ...defaults, str: 6, expected: -2 }],
-                ["goes up on even levels", { ...defaults, lvl: 2, expected: +1 }],
-                ["doesn't go up on odd levels", { ...defaults, lvl: 3, expected: +1 }],
-                ["goes up on even higher even levels", { ...defaults, lvl: 4, expected: +2 }],
-                ["goes up with levels and beefitude", { ...defaults, lvl: 4, str: 14, expected: +4 }],
-                ["defaults to 1 for Fighter", { ...defaults, class: ClassType.Fighter, expected: +1 }],
-                ["goes up on every level on Fighter", { ...defaults, class: ClassType.Fighter, lvl: 3, expected: +3 }],
-                ["goes up on strong, high-level Fighter", { ...defaults, class: ClassType.Fighter, lvl: 4, str: 14, expected: +6 }],
-                ["defaults to 0 for Rogue", { ...defaults, class: ClassType.Rogue }],
-                ["doesn't go up when hero is beefy Rogue", { ...defaults, class: ClassType.Rogue, str: 14 }],
-                ["goes up when hero is fast Rogue", { ...defaults, class: ClassType.Rogue, str: 14, dex: 14, expected: +2 }],
-                ["defaults to 0 for Monk", { ...defaults, class: ClassType.Monk }],
-                ["goes up on second level for Monk", { ...defaults, class: ClassType.Monk, lvl: 2, expected: 1 }],
-                ["goes up on third level for Monk", { ...defaults, class: ClassType.Monk, lvl: 3, expected: 2 }],
-                ["doesn't go up on fourth level for Monk", { ...defaults, class: ClassType.Monk, lvl: 4, expected: 2 }],
-                ["goes up on strong, high-level Monk", { ...defaults, class: ClassType.Monk, lvl: 10, str: 14, expected: 8 }],
-                ["defaults to 1 for Paladin", { ...defaults, class: ClassType.Paladin, expected: 1 }],
-                ["goes up on every level on Paladin", { ...defaults, class: ClassType.Paladin, lvl: 3, expected: +3 }],
-                ["goes up on strong, high-level Paladin", { ...defaults, class: ClassType.Paladin, lvl: 4, str: 14, expected: +6 }],
-            ])("%s", (_msg, data: IAttackModifierTestDefaults) => {
-                const { class: charClass, lvl, str, dex, expected } = data;
+                it.each([
+                    ["defaults to 0", { ...defaults }],
+                    ["goes up when hero is beefy", { ...defaults, str: 14, expected: +2 }],
+                    ["goes down when hero is whimpy", { ...defaults, str: 6, expected: -2 }],
+                    ["goes up on even levels", { ...defaults, lvl: 2, expected: +1 }],
+                    ["doesn't go up on odd levels", { ...defaults, lvl: 3, expected: +1 }],
+                    ["goes up on even higher even levels", { ...defaults, lvl: 4, expected: +2 }],
+                    ["goes up with levels and beefitude", { ...defaults, lvl: 4, str: 14, expected: +4 }],
+                ])("%s", (_msg, data: IAttackModifierTestData) => validateAttackModifier(data));
+            });
+
+            describe("for Fighters", () => {
+                const defaults: IAttackModifierTestData = { class: ClassType.Fighter, lvl: 1, str: 10, dex: 10, oppAlign: AlignmentType.Neutral, expected: 0 };
+
+                it.each([
+                    ["defaults to 1 for Fighter", { ...defaults, expected: +1 }],
+                    ["goes up on every level on Fighter", { ...defaults, lvl: 3, expected: +3 }],
+                    ["goes up on strong, high-level Fighter", { ...defaults, lvl: 4, str: 14, expected: +6 }],
+                ])("%s", (_msg, data: IAttackModifierTestData) => validateAttackModifier(data));
+            });
+
+            describe("for Rogues", () => {
+                const defaults: IAttackModifierTestData = { class: ClassType.Rogue, lvl: 1, str: 10, dex: 10, oppAlign: AlignmentType.Neutral, expected: 0 };
+
+                it.each([
+                    ["defaults to 0 for Rogue", { ...defaults }],
+                    ["doesn't go up when hero is beefy Rogue", { ...defaults, str: 14 }],
+                    ["goes up when hero is fast Rogue", { ...defaults, str: 14, dex: 14, expected: +2 }],
+                ])("%s", (_msg, data: IAttackModifierTestData) => validateAttackModifier(data));
+            });
+
+            describe("for Monks", () => {
+                const defaults: IAttackModifierTestData = { class: ClassType.Monk, lvl: 1, str: 10, dex: 10, oppAlign: AlignmentType.Neutral, expected: 0 };
+
+                it.each([
+                    ["defaults to 0 for Monk", { ...defaults }],
+                    ["goes up on second level for Monk", { ...defaults, lvl: 2, expected: 1 }],
+                    ["goes up on third level for Monk", { ...defaults, lvl: 3, expected: 2 }],
+                    ["doesn't go up on fourth level for Monk", { ...defaults, lvl: 4, expected: 2 }],
+                    ["goes up on strong, high-level Monk", { ...defaults, lvl: 10, str: 14, expected: 8 }],
+                ])("%s", (_msg, data: IAttackModifierTestData) => validateAttackModifier(data));
+            });
+
+            describe("for Paladins", () => {
+                const defaults: IAttackModifierTestData = { class: ClassType.Paladin, lvl: 1, str: 10, dex: 10, oppAlign: AlignmentType.Neutral, expected: 0 };
+
+                it.each([
+                    ["defaults to 1 for Paladin", { ...defaults, expected: 1 }],
+                    ["goes up on every level on Paladin", { ...defaults, lvl: 3, expected: +3 }],
+                    ["goes up on strong, high-level Paladin", { ...defaults, lvl: 4, str: 14, expected: +6 }],
+                    ["goes up on extra +2 for Paladin vs 'EVIL'", { ...defaults, oppAlign: AlignmentType.Evil, expected: +3 }],
+                    ["doesn't go up for Paladin vs 'EVIL'", { ...defaults, oppAlign: AlignmentType.Good, expected: +1 }],
+                ])("%s", (_msg, data: IAttackModifierTestData) => validateAttackModifier(data));
+            });
+
+            function validateAttackModifier(data: IAttackModifierTestData) {
+                const { class: charClass, lvl, str, dex, oppAlign, expected } = data;
+
+                const defender = new Hero();
+                defender.alignment = oppAlign;
 
                 global.makeLevel(sut, lvl);
                 global.makeClass(sut, charClass);
@@ -57,100 +103,108 @@ describe("Hero", () => {
                 sut.setAbility(AbilityType.Strength, str);
                 sut.setAbility(AbilityType.Dexterity, dex);
 
-                expect(sut.attackModifier).toBe(expected);
-            });
+                expect(sut.getAttackModifier(defender)).toBe(expected);
+            }
         });
 
         describe("#attackDamage", () => {
-            it("defaults to 1", () => {
-                expect(sut.attackDamage).toBe(1);
-            });
+            describe.each([[ClassType.None, ClassType.Fighter, ClassType.Rogue]])("for %s", (classType) => {
+                const defaults: IAttackDamageTestData = { classType, str: 10, opponentAlignment: AlignmentType.Neutral, expected: 0 };
 
-            it("goes up when hero is beefy", () => {
-                sut.setAbility(AbilityType.Strength, 14);
-                expect(sut.attackDamage).toBe(3);
-            });
-
-            it("cannot go below 1", () => {
-                sut.setAbility(AbilityType.Strength, 3);
-                expect(sut.attackDamage).toBe(1);
+                it.each([
+                    ["defaults to 1", { ...defaults, expected: 1 }],
+                    ["goes up when hero is beefy", { ...defaults, str: 14, expected: 3 }],
+                    ["cannot go below 1", { ...defaults, str: 3, expected: 1 }],
+                ])("%s", (_msg, data) => validateAttackDamage(data));
             });
 
             describe("when a Monk", () => {
-                beforeEach(() => {
-                    sut.class = ClassType.Monk;
-                });
+                const defaults = { classType: ClassType.Monk, str: 10, opponentAlignment: AlignmentType.Neutral };
 
-                it("defaults to 3", () => {
-                    expect(sut.attackDamage).toBe(3);
-                });
-
-                it("goes up when hero is fit", () => {
-                    sut.setAbility(AbilityType.Strength, 14);
-                    expect(sut.attackDamage).toBe(5);
-                });
-
-                it("cannot go below 1", () => {
-                    sut.setAbility(AbilityType.Strength, 1);
-                    expect(sut.attackDamage).toBe(1);
-                });
+                it.each([
+                    ["defaults to 3", { ...defaults, expected: 3 }],
+                    ["goes up when Monk is beefy", { ...defaults, str: 14, expected: 5 }],
+                    ["goes down when Monk is wimpy", { ...defaults, str: 6, expected: 1 }],
+                    ["cannot go below 1", { ...defaults, str: 1, expected: 1 }],
+                ])("%s", (_msg, data) => validateAttackDamage(data));
             });
+
+            describe("when a Paladin", () => {
+                const defaults = { classType: ClassType.Paladin, str: 10, opponentAlignment: AlignmentType.Neutral };
+
+                it.each([
+                    ["defaults to 1", { ...defaults, expected: 1 }],
+                    ["goes up when Paladin is beefy", { ...defaults, str: 14, expected: 3 }],
+                    ["goes up by +2 when opponent is 'EVIL'", { ...defaults, opponentAlignment: AlignmentType.Evil, expected: 3 }],
+                    ["remains default when 'GOOD'", { ...defaults, opponentAlignment: AlignmentType.Good, expected: 1 }],
+                    ["goes down when Paladin is wimpy vs 'EVIL'", { ...defaults, str: 6, opponentAlignment: AlignmentType.Evil, expected: 1 }],
+                    ["cannot go below 1", { ...defaults, str: 1, expected: 1 }],
+                ])("%s", (_msg, data) => validateAttackDamage(data));
+            });
+
+            function validateAttackDamage(data: IAttackDamageTestData) {
+                const defender = new Hero();
+                defender.alignment = data.opponentAlignment;
+
+                global.makeClass(sut, data.classType);
+
+                sut.setAbility(AbilityType.Strength, data.str);
+                expect(sut.getAttackDamage(defender)).toBe(data.expected);
+            }
         });
 
         describe("#critAttackDamage", () => {
-            it("defaults to 2", () => {
-                expect(sut.critAttackDamage).toBe(2);
+            describe.each([[ClassType.None, ClassType.Fighter]])("for %s", (classType) => {
+                const defaults: IAttackDamageTestData = { classType, str: 10, opponentAlignment: AlignmentType.Neutral, expected: 0 };
+
+                it.each([
+                    ["defaults to 2", { ...defaults, expected: 2 }],
+                    ["goes up when hero is beefy", { ...defaults, str: 14, expected: 6 }],
+                    ["cannot go below 1", { ...defaults, str: 3, expected: 1 }],
+                ])("%s", (_msg, data) => validateCriticalDamage(data));
             });
 
-            it("goes up when hero is beefy", () => {
-                sut.setAbility(AbilityType.Strength, 14);
-                expect(sut.critAttackDamage).toBe(6);
+            describe("when a Rogue", () => {
+                const defaults = { classType: ClassType.Rogue, str: 10, opponentAlignment: AlignmentType.Neutral };
+
+                it.each([
+                    ["defaults to 3", { ...defaults, expected: 3 }],
+                    ["goes up when Rogue is beefy", { ...defaults, str: 14, expected: 9 }],
+                    ["cannot go below 1", { ...defaults, str: 1, expected: 1 }],
+                ])("%s", (_msg, data) => validateCriticalDamage(data));
             });
 
-            it("cannot go below 1", () => {
-                sut.setAbility(AbilityType.Strength, 3);
-                expect(sut.critAttackDamage).toBe(1);
-            });
-        });
+            describe("when a Monk", () => {
+                const defaults = { classType: ClassType.Monk, str: 10, opponentAlignment: AlignmentType.Neutral };
 
-        describe("when a Rogue", () => {
-            beforeEach(() => {
-                sut.class = ClassType.Rogue;
-            });
-
-            it("defaults to 3", () => {
-                expect(sut.critAttackDamage).toBe(3);
+                it.each([
+                    ["defaults to 6", { ...defaults, expected: 6 }],
+                    ["goes up when Monk is beefy", { ...defaults, str: 14, expected: 10 }],
+                    ["cannot go below 1", { ...defaults, str: 1, expected: 1 }],
+                ])("%s", (_msg, data) => validateCriticalDamage(data));
             });
 
-            it("goes up when hero is fit", () => {
-                sut.setAbility(AbilityType.Strength, 14);
-                expect(sut.critAttackDamage).toBe(9);
+            describe("when a Paladin", () => {
+                const defaults = { classType: ClassType.Paladin, str: 10, opponentAlignment: AlignmentType.Neutral };
+
+                it.each([
+                    ["defaults to 2", { ...defaults, expected: 2 }],
+                    ["goes up when Paladin is beefy", { ...defaults, str: 14, expected: 6 }],
+                    ["goes up by +2 then x3 when opponent is 'EVIL'", { ...defaults, opponentAlignment: AlignmentType.Evil, expected: 9 }],
+                    ["goes down when Paladin is wimpy and opponent is 'EVIL'", { ...defaults, str: 6, opponentAlignment: AlignmentType.Evil, expected: 3 }],
+                    ["cannot go below 1", { ...defaults, str: 1, expected: 1 }],
+                ])("%s", (_msg, data) => validateCriticalDamage(data));
             });
 
-            it("cannot go below 1", () => {
-                sut.setAbility(AbilityType.Strength, 6);
-                expect(sut.critAttackDamage).toBe(1);
-            });
-        });
+            function validateCriticalDamage(data: IAttackDamageTestData) {
+                const defender = new Hero();
+                defender.alignment = data.opponentAlignment;
 
-        describe("when a Monk", () => {
-            beforeEach(() => {
-                sut.class = ClassType.Monk;
-            });
+                global.makeClass(sut, data.classType);
 
-            it("defaults to 6", () => {
-                expect(sut.critAttackDamage).toBe(6);
-            });
-
-            it("goes up when hero is fit", () => {
-                sut.setAbility(AbilityType.Strength, 14);
-                expect(sut.critAttackDamage).toBe(10);
-            });
-
-            it("cannot go below 1", () => {
-                sut.setAbility(AbilityType.Strength, 1);
-                expect(sut.critAttackDamage).toBe(1);
-            });
+                sut.setAbility(AbilityType.Strength, data.str);
+                expect(sut.getCritAttackDamage(defender)).toBe(data.expected);
+            }
         });
     });
 });

@@ -60,14 +60,14 @@ describe("Attack", () => {
             previousHitPoints = defender.currentHitPoints;
             sut.resolve(8);
 
-            expect(defender.currentHitPoints).toBe(previousHitPoints - attacker.attackDamage);
+            expect(defender.currentHitPoints).toBe(previousHitPoints - attacker.getAttackDamage(defender));
         });
 
         it("does even more damage", () => {
             previousHitPoints = defender.currentHitPoints;
             sut.resolve(20);
 
-            expect(defender.currentHitPoints).toBe(previousHitPoints - attacker.critAttackDamage);
+            expect(defender.currentHitPoints).toBe(previousHitPoints - attacker.getCritAttackDamage(defender));
         });
     });
 });
