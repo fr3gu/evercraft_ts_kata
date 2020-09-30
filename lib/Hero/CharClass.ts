@@ -16,7 +16,7 @@ export default class CharClass {
     }
 
     public set value(v: ClassType) {
-        Validator.validateClassAndAlignment(v, this._hero.alignment);
+        Validator.validateClassAlignmentAndRace(v, this._hero.alignment, this._hero.race);
 
         this._class = v;
     }

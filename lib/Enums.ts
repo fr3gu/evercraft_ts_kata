@@ -23,3 +23,12 @@ export enum ClassType {
     Monk = 4,
     Paladin = 5,
 }
+
+
+export enum RaceType {
+    Human = 1,
+    Orc = 2,
+    //Dwarf = 3,
+    //Elf = 4,
+    //Halfling = 5
+}
