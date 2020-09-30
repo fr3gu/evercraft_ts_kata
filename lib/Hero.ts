@@ -1,4 +1,4 @@
-import { AbilityType, AlignmentType, ClassType } from "./Enums";
+import { AbilityType, AlignmentType, ClassType, RaceType } from "./Enums";
 import HeroAbility from "./Ability";
 import HeroXpSystem from "./Hero/XpSystem";
 import HeroHpSystem from "./Hero/HpSystem";
@@ -6,6 +6,7 @@ import HeroArmorClass from "./Hero/ArmorClass";
 import HeroAttackSystem from "./Hero/AttackSystem";
 import HeroAlignment from "./Hero/Alignment";
 import HeroCharClass from "./Hero/CharClass";
+import HeroRace from "./Hero/Race";
 
 export default class Hero {
     private _alignment: HeroAlignment;
@@ -15,17 +16,18 @@ export default class Hero {
     private _hp: HeroHpSystem;
     private _ac: HeroArmorClass;
     private _attack: HeroAttackSystem;
+    private _race: HeroRace;
 
     name: string;
 
     constructor() {
         this._abilities = new Map([
-            [AbilityType.Strength, new HeroAbility(AbilityType.Strength)],
-            [AbilityType.Dexterity, new HeroAbility(AbilityType.Dexterity)],
-            [AbilityType.Constitution, new HeroAbility(AbilityType.Constitution)],
-            [AbilityType.Wisdom, new HeroAbility(AbilityType.Wisdom)],
-            [AbilityType.Intelligence, new HeroAbility(AbilityType.Intelligence)],
-            [AbilityType.Charisma, new HeroAbility(AbilityType.Charisma)],
+            [AbilityType.Strength, new HeroAbility(this, AbilityType.Strength)],
+            [AbilityType.Dexterity, new HeroAbility(this, AbilityType.Dexterity)],
+            [AbilityType.Constitution, new HeroAbility(this, AbilityType.Constitution)],
+            [AbilityType.Wisdom, new HeroAbility(this, AbilityType.Wisdom)],
+            [AbilityType.Intelligence, new HeroAbility(this, AbilityType.Intelligence)],
+            [AbilityType.Charisma, new HeroAbility(this, AbilityType.Charisma)],
         ]);
 
         this._alignment = new HeroAlignment(this);
@@ -34,6 +36,7 @@ export default class Hero {
         this._hp = new HeroHpSystem(this);
         this._ac = new HeroArmorClass(this);
         this._attack = new HeroAttackSystem(this);
+        this._race = new HeroRace(this);
 
         this.name = "";
     }
@@ -55,6 +58,10 @@ export default class Hero {
     get currentHitPoints(): number { return this._hp.currentHp; }
 
     get isAlive(): boolean { return this._hp.isAlive; }
+
+    get race(): RaceType { return this._race.value; }
+
+    set race(v: RaceType) { this._race.value = v; }
 
     addXp = (amount: number): void => this._xpSystem.addXp(amount);
 

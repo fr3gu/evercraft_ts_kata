@@ -1,5 +1,5 @@
 import Hero from "../Hero";
-import { AlignmentType, ClassType } from "../Enums";
+import { AlignmentType, ClassType, RaceType } from "../Enums";
 import Validator from "../Validator";
 
 export default class Alignment {
@@ -16,12 +16,8 @@ export default class Alignment {
     }
 
     public set value(v: AlignmentType) {
-        Validator.validateClassAndAlignment(this.class, v);
+        Validator.validateClassAlignmentAndRace(this._hero.class, v, this._hero.race);
 
         this._alignment = v;
-    }
-
-    private get class(): ClassType {
-        return this._hero.class;
     }
 }

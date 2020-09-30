@@ -2,13 +2,17 @@
  * @jest-environment node
  */
 
-import { Ability } from "../evercraft";
+import { Ability, Hero, RaceType } from "../evercraft";
+import { ISpecHelperGlobal } from "./Declarations";
+
+declare const global: ISpecHelperGlobal;
 
 describe("Ability", () => {
     let sut: Ability;
+    let hero = new Hero();
 
     beforeEach(() => {
-        sut = new Ability();
+        sut = new Ability(hero);
     });
 
     describe("#score", () => {
@@ -59,6 +63,16 @@ describe("Ability", () => {
         ])("score %i has a modifier of %i", (score, modifier) => {
             sut.score = score;
             expect(sut.modifier).toEqual(modifier);
+        });
+
+        it.each([
+            [RaceType.Human, "Human"],
+            [RaceType.Orc, "Orc"],
+            //[RaceType.Dwarf, "Dwarf"]
+        ])("can get modifiers for race", (race) => {
+            global.makeRace(hero, race);
+
+            expect(sut.modifier).toBeDefined();
         });
     });
 });
