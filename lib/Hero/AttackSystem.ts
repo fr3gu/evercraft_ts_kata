@@ -4,13 +4,13 @@ import { AbilityType, ClassType } from "../Enums";
 const BASE_ATTACK_DMG = 1;
 const MIN_ATTACK_DMG = 1;
 const CRIT_MODIFIER = 2;
-const ATTACK_PROGRESSION = 1/2;
+const ATTACK_PROGRESSION = 1 / 2;
 
 const classFeatures = new Map<ClassType, { baseDamage: number; attackProgression: number; attackAbilityMod: AbilityType; critMultiplier: number }>([
     [ClassType.None, { baseDamage: BASE_ATTACK_DMG, attackProgression: ATTACK_PROGRESSION, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
     [ClassType.Fighter, { baseDamage: BASE_ATTACK_DMG, attackProgression: 1, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
     [ClassType.Rogue, { baseDamage: BASE_ATTACK_DMG, attackProgression: ATTACK_PROGRESSION, attackAbilityMod: AbilityType.Dexterity, critMultiplier: 3 }],
-    [ClassType.Monk, { baseDamage: 3, attackProgression: 2/3, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
+    [ClassType.Monk, { baseDamage: 3, attackProgression: 2 / 3, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
     [ClassType.Paladin, { baseDamage: 2, attackProgression: 1, attackAbilityMod: AbilityType.Strength, critMultiplier: CRIT_MODIFIER }],
 ]);
 

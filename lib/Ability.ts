@@ -4,7 +4,7 @@ export default class Ability {
     private _score: number;
     private _type: AbilityType;
 
-    constructor(type: AbilityType = AbilityType.Unknown, score: number = 10) {
+    constructor(type: AbilityType = AbilityType.Unknown, score = 10) {
         this._type = type;
         this._score = score;
     }
@@ -15,7 +15,7 @@ export default class Ability {
 
     set score(v: number) {
         if (v < 1 || v > 20) {
-            throw `Invalid score (${v})!`;
+            throw new Error(`Invalid score (${v})!`);
         }
         this._score = v;
     }

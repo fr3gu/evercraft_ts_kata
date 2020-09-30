@@ -22,6 +22,6 @@ export default class Alignment {
     }
 
     private get class(): ClassType {
-        return this._hero.class
+        return this._hero.class;
     }
 }

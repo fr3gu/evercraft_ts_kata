@@ -1,6 +1,9 @@
-import { AlignmentType, ClassType, Hero } from "../evercraft";
+/* eslint no-param-reassign: 0 */
 
-declare var global: any;
+import { AlignmentType, ClassType, Hero } from "../evercraft";
+import { ISpecHelperGlobal } from "./Declarations";
+
+declare const global: ISpecHelperGlobal;
 
 global.makeLevel = (hero: Hero, level: number) => {
     hero.addXp((level - 1) * 1000);
@@ -8,6 +11,6 @@ global.makeLevel = (hero: Hero, level: number) => {
 
 global.makeClass = (hero: Hero, classType: ClassType) => {
     if (classType === ClassType.Rogue) hero.alignment = AlignmentType.Neutral;
-    if (classType === ClassType.Paladin) hero.alignment = AlignmentType.Good;    
+    if (classType === ClassType.Paladin) hero.alignment = AlignmentType.Good;
     hero.class = classType;
 };

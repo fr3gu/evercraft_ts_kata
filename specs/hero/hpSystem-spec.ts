@@ -2,15 +2,17 @@
  * @jest-environment node
  */
 
-import { Hero, AbilityType, ClassType, AlignmentType } from "../../evercraft";
+import { Hero, AbilityType, ClassType } from "../../evercraft";
 import { ISpecHelperGlobal } from "../Declarations";
 
-declare var global: ISpecHelperGlobal;
+declare const global: ISpecHelperGlobal;
 
 describe("Hero", () => {
     let sut: Hero;
 
-    beforeEach(() => (sut = new Hero()));
+    beforeEach(() => {
+        sut = new Hero();
+    });
 
     describe("#hitPoints", () => {
         it.each([
@@ -34,7 +36,7 @@ describe("Hero", () => {
         ])("%s", (_msg, charClass, lvl, con, hp) => {
             global.makeLevel(sut, lvl);
             global.makeClass(sut, charClass);
-            
+
             sut.setAbility(AbilityType.Constitution, con);
             expect(sut.hitPoints).toBe(hp);
         });

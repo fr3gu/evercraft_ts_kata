@@ -9,7 +9,7 @@ const HP_PER_LEVEL = new Map<ClassType, { hpPerLevel: number }>([
     [ClassType.Fighter, { hpPerLevel: 10 }],
     [ClassType.Rogue, { hpPerLevel: BASE_HITPOINTS }],
     [ClassType.Monk, { hpPerLevel: 6 }],
-    [ClassType.Paladin, { hpPerLevel: 8 }]
+    [ClassType.Paladin, { hpPerLevel: 8 }],
 ]);
 
 export default class HpSystem {
@@ -38,7 +38,7 @@ export default class HpSystem {
     }
 
     private get class(): ClassType {
-        return this._hero.class
+        return this._hero.class;
     }
 
     doDamage(points: number): void {

@@ -1,3 +1,5 @@
+/* eslint no-shadow: 0 */
+
 export enum AlignmentType {
     Neutral = "NEUTRAL",
     Good = "GOOD",

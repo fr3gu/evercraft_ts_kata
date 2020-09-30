@@ -1,5 +1,5 @@
 import Hero from "../Hero";
-import { AlignmentType, ClassType } from "../Enums";
+import { ClassType } from "../Enums";
 import Validator from "../Validator";
 
 export default class CharClass {

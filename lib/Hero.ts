@@ -70,7 +70,7 @@ export default class Hero {
 
     getModifierForAbility = (abilityType: AbilityType): number => this._abilities.get(abilityType).modifier;
 
-    setAbility = (abilityType: AbilityType, score: number) => {
+    setAbility = (abilityType: AbilityType, score: number): void => {
         const theAbility = this._abilities.get(abilityType);
         theAbility.score = score;
         this._abilities.set(abilityType, theAbility);

@@ -2,18 +2,19 @@
  * @jest-environment node
  */
 
-import { AbilityType, AlignmentType, ClassType, Hero } from "../../evercraft";
+import { AbilityType, ClassType, Hero } from "../../evercraft";
 import { ISpecHelperGlobal } from "../Declarations";
 
-declare var global: ISpecHelperGlobal;
+declare const global: ISpecHelperGlobal;
 
 describe("Hero", () => {
     let sut: Hero;
 
-    beforeEach(() => (sut = new Hero()));
+    beforeEach(() => {
+        sut = new Hero();
+    });
 
     describe("#attackSystem", () => {
-        
         describe("#attackModifier", () => {
             interface IAttackModifierTestDefaults {
                 class: ClassType;
@@ -22,9 +23,9 @@ describe("Hero", () => {
                 dex: number;
                 expected: number;
             }
-    
+
             const defaults: IAttackModifierTestDefaults = { class: ClassType.None, lvl: 1, str: 10, dex: 10, expected: 0 };
-    
+
             it.each([
                 ["defaults to 0", { ...defaults }],
                 ["goes up when hero is beefy", { ...defaults, str: 14, expected: +2 }],
@@ -49,79 +50,83 @@ describe("Hero", () => {
                 ["goes up on strong, high-level Paladin", { ...defaults, class: ClassType.Paladin, lvl: 4, str: 14, expected: +6 }],
             ])("%s", (_msg, data: IAttackModifierTestDefaults) => {
                 const { class: charClass, lvl, str, dex, expected } = data;
-                
+
                 global.makeLevel(sut, lvl);
                 global.makeClass(sut, charClass);
 
                 sut.setAbility(AbilityType.Strength, str);
                 sut.setAbility(AbilityType.Dexterity, dex);
-    
+
                 expect(sut.attackModifier).toBe(expected);
             });
         });
-    
+
         describe("#attackDamage", () => {
             it("defaults to 1", () => {
                 expect(sut.attackDamage).toBe(1);
             });
-    
+
             it("goes up when hero is beefy", () => {
                 sut.setAbility(AbilityType.Strength, 14);
                 expect(sut.attackDamage).toBe(3);
             });
-    
+
             it("cannot go below 1", () => {
                 sut.setAbility(AbilityType.Strength, 3);
                 expect(sut.attackDamage).toBe(1);
             });
 
             describe("when a Monk", () => {
-                beforeEach(() => sut.class = ClassType.Monk);
-                
+                beforeEach(() => {
+                    sut.class = ClassType.Monk;
+                });
+
                 it("defaults to 3", () => {
                     expect(sut.attackDamage).toBe(3);
                 });
-        
+
                 it("goes up when hero is fit", () => {
                     sut.setAbility(AbilityType.Strength, 14);
                     expect(sut.attackDamage).toBe(5);
                 });
-        
+
                 it("cannot go below 1", () => {
                     sut.setAbility(AbilityType.Strength, 1);
                     expect(sut.attackDamage).toBe(1);
                 });
             });
         });
-    
+
         describe("#critAttackDamage", () => {
             it("defaults to 2", () => {
                 expect(sut.critAttackDamage).toBe(2);
             });
-    
+
             it("goes up when hero is beefy", () => {
                 sut.setAbility(AbilityType.Strength, 14);
                 expect(sut.critAttackDamage).toBe(6);
             });
-    
+
             it("cannot go below 1", () => {
                 sut.setAbility(AbilityType.Strength, 3);
                 expect(sut.critAttackDamage).toBe(1);
             });
         });
-    
+
         describe("when a Rogue", () => {
-            beforeEach(() => sut.class = ClassType.Rogue);
-            
+            beforeEach(() => {
+                sut.class = ClassType.Rogue;
+            });
+
             it("defaults to 3", () => {
                 expect(sut.critAttackDamage).toBe(3);
             });
-    
+
             it("goes up when hero is fit", () => {
                 sut.setAbility(AbilityType.Strength, 14);
                 expect(sut.critAttackDamage).toBe(9);
             });
-    
+
             it("cannot go below 1", () => {
                 sut.setAbility(AbilityType.Strength, 6);
                 expect(sut.critAttackDamage).toBe(1);
@@ -129,17 +134,19 @@ describe("Hero", () => {
         });
 
         describe("when a Monk", () => {
-            beforeEach(() => sut.class = ClassType.Monk);
-            
+            beforeEach(() => {
+                sut.class = ClassType.Monk;
+            });
+
             it("defaults to 6", () => {
                 expect(sut.critAttackDamage).toBe(6);
             });
-    
+
             it("goes up when hero is fit", () => {
                 sut.setAbility(AbilityType.Strength, 14);
                 expect(sut.critAttackDamage).toBe(10);
             });
-    
+
             it("cannot go below 1", () => {
                 sut.setAbility(AbilityType.Strength, 1);
                 expect(sut.critAttackDamage).toBe(1);

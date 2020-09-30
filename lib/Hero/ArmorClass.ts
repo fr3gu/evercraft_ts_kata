@@ -17,7 +17,7 @@ export default class ArmorClass {
         } else {
             total += this.dexterityModifier;
         }
-        
+
         if (this._hero.class === ClassType.Monk) {
             total += this.positiveWis;
         }
@@ -28,7 +28,7 @@ export default class ArmorClass {
     private get dexterityModifier(): number {
         return this._hero.getModifierForAbility(AbilityType.Dexterity);
     }
-    
+
     private get wisdomModifier(): number {
         return this._hero.getModifierForAbility(AbilityType.Wisdom);
     }
@@ -36,9 +36,8 @@ export default class ArmorClass {
     private get negativeDex(): number {
         return Math.min(this.dexterityModifier, 0);
     }
-    
+
     private get positiveWis(): number {
         return Math.max(this.wisdomModifier, 0);
     }
-
 }
