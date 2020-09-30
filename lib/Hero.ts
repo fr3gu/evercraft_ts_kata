@@ -22,12 +22,12 @@ export default class Hero {
 
     constructor() {
         this._abilities = new Map([
-            [AbilityType.Strength, new HeroAbility(AbilityType.Strength)],
-            [AbilityType.Dexterity, new HeroAbility(AbilityType.Dexterity)],
-            [AbilityType.Constitution, new HeroAbility(AbilityType.Constitution)],
-            [AbilityType.Wisdom, new HeroAbility(AbilityType.Wisdom)],
-            [AbilityType.Intelligence, new HeroAbility(AbilityType.Intelligence)],
-            [AbilityType.Charisma, new HeroAbility(AbilityType.Charisma)],
+            [AbilityType.Strength, new HeroAbility(this, AbilityType.Strength)],
+            [AbilityType.Dexterity, new HeroAbility(this, AbilityType.Dexterity)],
+            [AbilityType.Constitution, new HeroAbility(this, AbilityType.Constitution)],
+            [AbilityType.Wisdom, new HeroAbility(this, AbilityType.Wisdom)],
+            [AbilityType.Intelligence, new HeroAbility(this, AbilityType.Intelligence)],
+            [AbilityType.Charisma, new HeroAbility(this, AbilityType.Charisma)],
         ]);
 
         this._alignment = new HeroAlignment(this);
